@@ -12,12 +12,12 @@
         <aside class="sidebar">
             <div class="sidebar-brand">IRMS Portal</div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="programmes.html">Programmes</a></li>
-                <li><a href="students.html" class="active">Students</a></li>
-                <li><a href="assessors.html">Assessors</a></li>
-                <li><a href="internships.html">Internships</a></li>
-                <li><a href="settings.html">Settings</a></li>
+                <li><a href="dashboard.php">Dashboard</a></li>
+                <li><a href="programmes.php">Programmes</a></li>
+                <li><a href="students.php" class="active">Students</a></li>
+                <li><a href="assessors.php">Assessors</a></li>
+                <li><a href="internships.php">Internships</a></li>
+                <li><a href="settings.php">Settings</a></li>
             </ul>
         </aside>
 

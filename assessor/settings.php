@@ -12,8 +12,8 @@
         <aside class="sidebar">
             <div class="sidebar-brand">IRMS Assessor</div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard.html">Dashboard / List</a></li>
-                <li><a href="settings.html" class="active">Settings</a></li>
+                <li><a href="dashboard.php">Dashboard / List</a></li>
+                <li><a href="settings.php" class="active">Settings</a></li>
             </ul>
         </aside>
 

@@ -12,12 +12,12 @@
         <aside class="sidebar">
             <div class="sidebar-brand">IRMS Portal</div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="programmes.html">Programmes</a></li>
-                <li><a href="students.html">Students</a></li>
-                <li><a href="assessors.html">Assessors</a></li>
-                <li><a href="internships.html" class="active">Internships</a></li>
-                <li><a href="settings.html">Settings</a></li>
+                <li><a href="dashboard.php">Dashboard</a></li>
+                <li><a href="programmes.php">Programmes</a></li>
+                <li><a href="students.php">Students</a></li>
+                <li><a href="assessors.php">Assessors</a></li>
+                <li><a href="internships.php" class="active">Internships</a></li>
+                <li><a href="settings.php">Settings</a></li>
             </ul>
         </aside>
 
@@ -133,7 +133,7 @@
                                         <span style="background-color: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Evaluated (85%)</span>
                                     </td>
                                     <td style="padding: 16px; text-align: right;">
-                                        <a href="../assessor/view_result.html?student_id=STU1002" style="color: var(--primary-color); text-decoration: none; font-size: 14px; font-weight: 600;">View Result</a>
+                                        <a href="../assessor/view_result.php?student_id=STU1002" style="color: var(--primary-color); text-decoration: none; font-size: 14px; font-weight: 600;">View Result</a>
                                     </td>
                                 </tr>
                             </tbody>
