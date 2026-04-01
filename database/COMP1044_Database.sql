@@ -157,11 +157,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `username`, `email`, `password`, `fullname`, `role`) VALUES
-(1, 'admin', 'admin@university.edu.my', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System Administrator', 'admin'),
-(2, 'raj.kumar', 'raj.kumar@techcorp.com.my', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Raj Kumar', 'industry_supervisor'),
-(3, 'siti.rahimah', 'siti.rahimah@innovate.com.my', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Siti Rahimah Binti Aziz', 'industry_supervisor'),
-(4, 'dr.lim', 'lim.weikang@university.edu.my', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Dr. Lim Wei Kang', 'lecturer'),
-(5, 'dr.amirah', 'amirah.hassan@university.edu.my', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Dr. Amirah Hassan', 'lecturer');
+(1, 'admin', 'admin@university.edu.my', '$2y$10$nS.XRnYEA4Bn1.eyleHSleYVIT5RDXbPUZLjgkN89NeQPv/qdpCve', 'System Administrator', 'admin'),
+(2, 'raj.kumar', 'raj.kumar@techcorp.com.my', '$2y$10$nS.XRnYEA4Bn1.eyleHSleYVIT5RDXbPUZLjgkN89NeQPv/qdpCve', 'Raj Kumar', 'industry_supervisor'),
+(3, 'siti.rahimah', 'siti.rahimah@innovate.com.my', '$2y$10$nS.XRnYEA4Bn1.eyleHSleYVIT5RDXbPUZLjgkN89NeQPv/qdpCve', 'Siti Rahimah Binti Aziz', 'industry_supervisor'),
+(4, 'dr.lim', 'lim.weikang@university.edu.my', '$2y$10$nS.XRnYEA4Bn1.eyleHSleYVIT5RDXbPUZLjgkN89NeQPv/qdpCve', 'Dr. Lim Wei Kang', 'lecturer'),
+(5, 'dr.amirah', 'amirah.hassan@university.edu.my', '$2y$10$nS.XRnYEA4Bn1.eyleHSleYVIT5RDXbPUZLjgkN89NeQPv/qdpCve', 'Dr. Amirah Hassan', 'lecturer');
 
 --
 -- Indexes for dumped tables
