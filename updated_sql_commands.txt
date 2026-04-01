@@ -1,0 +1,372 @@
+CREATE TABLE programme (
+    programme_id   INT AUTO_INCREMENT PRIMARY KEY,
+    programme_name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE user (
+    user_id  INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email    VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,       -- always store bcrypt hash
+    fullname VARCHAR(255) NOT NULL,
+    role     ENUM('admin', 'industry_supervisor', 'lecturer') NOT NULL
+);
+
+CREATE TABLE student (
+    student_id   INT PRIMARY KEY,
+    student_name VARCHAR(255) NOT NULL,
+    programme_id INT NOT NULL,
+    FOREIGN KEY (programme_id) REFERENCES programme(programme_id)
+);
+
+CREATE TABLE internships (
+    internship_id          INT AUTO_INCREMENT PRIMARY KEY,
+    student_id             INT NOT NULL,
+    industry_supervisor_id INT NOT NULL,
+    lecturer_id            INT NOT NULL,
+    company_name           VARCHAR(255) NOT NULL,
+    semester               ENUM('Autumn', 'Spring', 'Summer') NOT NULL,
+    internship_year        YEAR NOT NULL,
+
+    FOREIGN KEY (student_id)             REFERENCES student(student_id)  ON DELETE RESTRICT,
+    FOREIGN KEY (industry_supervisor_id) REFERENCES user(user_id)    ON DELETE RESTRICT,
+    FOREIGN KEY (lecturer_id)            REFERENCES user(user_id)    ON DELETE RESTRICT,
+
+    UNIQUE (student_id, semester, internship_year)
+);
+
+CREATE TABLE assessment (
+    assessment_id  INT AUTO_INCREMENT PRIMARY KEY,
+    internship_id  INT NOT NULL,
+    assessor_id    INT NOT NULL,
+
+    task_projects               INT  NOT NULL,
+    task_projects_comment       TEXT NULL,
+
+    health_safety               INT  NOT NULL,
+    health_safety_comment       TEXT NULL,
+
+    theoretical_knowledge       INT  NOT NULL,
+    theoretical_knowledge_comment TEXT NULL,
+
+    report_presentation         INT  NOT NULL,
+    report_presentation_comment TEXT NULL,
+
+    clarity_of_language         INT  NOT NULL,
+    clarity_of_language_comment TEXT NULL,
+
+    lifelong_learning           INT  NOT NULL,
+    lifelong_learning_comment   TEXT NULL,
+
+    project_management          INT  NOT NULL,
+    project_management_comment  TEXT NULL,
+
+    time_management             INT  NOT NULL,
+    time_management_comment     TEXT NULL,
+
+    overall_comments TEXT NOT NULL,
+
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (internship_id) REFERENCES internships(internship_id) ON DELETE RESTRICT,
+    FOREIGN KEY (assessor_id)   REFERENCES user(user_id)          ON DELETE RESTRICT,
+
+    UNIQUE (internship_id, assessor_id)
+);
+
+-- ============================================================
+-- PROGRAMMES
+-- ============================================================
+INSERT INTO programme (programme_name) VALUES
+    ('Bachelor of Computer Science'),
+    ('Bachelor of Information Technology'),
+    ('Bachelor of Software Engineering'),
+    ('Bachelor of Data Science');
+
+
+-- ============================================================
+-- USERS
+-- Password for all accounts: password123
+-- ============================================================
+INSERT INTO user (username, email, password, fullname, role) VALUES
+    ('admin',
+     'admin@university.edu.my',
+     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     'System Administrator',
+     'admin'),
+
+    ('raj.kumar',
+     'raj.kumar@techcorp.com.my',
+     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     'Raj Kumar',
+     'industry_supervisor'),
+
+    ('siti.rahimah',
+     'siti.rahimah@innovate.com.my',
+     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     'Siti Rahimah Binti Aziz',
+     'industry_supervisor'),
+
+    ('dr.lim',
+     'lim.weikang@university.edu.my',
+     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     'Dr. Lim Wei Kang',
+     'lecturer'),
+
+    ('dr.amirah',
+     'amirah.hassan@university.edu.my',
+     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     'Dr. Amirah Hassan',
+     'lecturer');
+
+-- user_id assignments:
+--   1 = admin
+--   2 = raj.kumar        (industry_supervisor)
+--   3 = siti.rahimah     (industry_supervisor)
+--   4 = dr.lim           (lecturer)
+--   5 = dr.amirah        (lecturer)
+
+
+-- ============================================================
+-- STUDENTS
+-- 8-digit IDs: first 2 digits = enrolment year (e.g. 2070xxxx = 2020 intake)
+-- ============================================================
+INSERT INTO student (student_id, student_name, programme_id) VALUES
+    (20701234, 'Ahmad Faris Bin Zulkifli',  1),   -- Computer Science
+    (20702345, 'Nurul Ain Binti Roslan',    2),   -- Information Technology
+    (20703456, 'Kevin Tan Jia Hao',         3),   -- Software Engineering
+    (20704567, 'Priya Subramaniam',         1),   -- Computer Science
+    (20805123, 'Muhammad Haziq Bin Ismail', 4),   -- Data Science  (2021 intake)
+    (20806234, 'Chloe Wong Mei Ling',       2);   -- Information Technology
+
+
+-- ============================================================
+-- INTERNSHIPS
+-- ============================================================
+INSERT INTO internships
+    (student_id, industry_supervisor_id, lecturer_id, company_name, semester, internship_year)
+VALUES
+    (20701234, 2, 4, 'TechCorp Solutions Sdn. Bhd.',  'Summer', 2024),
+    (20702345, 3, 4, 'Innovate Digital Sdn. Bhd.',    'Summer', 2024),
+    (20703456, 2, 5, 'TechCorp Solutions Sdn. Bhd.',  'Summer', 2024),
+    (20704567, 3, 5, 'Innovate Digital Sdn. Bhd.',    'Summer', 2024),
+    (20805123, 2, 4, 'Axiata Group Berhad',            'Autumn', 2024),
+    (20806234, 3, 5, 'Grab Holdings Malaysia',         'Autumn', 2024);
+
+-- internship_id assignments: 1 through 6
+
+
+-- ============================================================
+-- ASSESSMENTS
+-- Max marks per category:
+--   task_projects        /10
+--   health_safety        /10
+--   theoretical_knowledge/10
+--   report_presentation  /15
+--   clarity_of_language  /10
+--   lifelong_learning    /15
+--   project_management   /15
+--   time_management      /15
+--   TOTAL                /100
+-- ============================================================
+
+
+-- ---- INTERNSHIP 1: Ahmad Faris (20701234) ----
+
+-- Raj Kumar (industry_supervisor, id=2)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    1, 2,
+    8,  'Completed assigned modules ahead of schedule.',
+    9,  'Consistently followed all workplace safety protocols.',
+    7,  'Applied university concepts well but needs more depth in networking.',
+    11, 'Report structure is clear; minor formatting inconsistencies.',
+    7,  'Writing is mostly clear; some technical terms misused.',
+    12, 'Attended two external seminars on cloud computing voluntarily.',
+    11, 'Managed tasks using Jira effectively.',
+    13, 'Rarely missed deadlines throughout the internship.',
+    'Ahmad is a reliable and self-motivated intern. Shows strong potential in backend development.'
+);
+-- Raj's total: 8+9+7+11+7+12+11+13 = 78/100
+
+-- Dr. Lim (lecturer, id=4)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    1, 4,
+    7,  'Tasks completed satisfactorily based on supervisor report.',
+    8,  'No safety incidents reported.',
+    8,  'Good linkage between database concepts and real-world use.',
+    12, 'Final report is well-structured with a proper literature review.',
+    7,  'Language is clear but academic writing style needs improvement.',
+    12, 'Proactively engaged in additional learning activities.',
+    11, 'Demonstrated adequate planning skills for given tasks.',
+    12, 'All university submission deadlines met on time.',
+    'Ahmad has performed well overall. His report reflects a solid understanding of his internship experience.'
+);
+-- Dr. Lim's total: 7+8+8+12+7+12+11+12 = 77/100
+-- Ahmad's FINAL MARK: (78 + 77) / 2 = 77.5/100
+
+
+-- ---- INTERNSHIP 2: Nurul Ain (20702345) ----
+
+-- Siti Rahimah (industry_supervisor, id=3)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    2, 3,
+    9,  'Exceeded expectations in the UI/UX redesign project.',
+    9,  'Always followed digital security and safety protocols.',
+    9,  'Demonstrated strong grasp of human-computer interaction principles.',
+    14, 'Outstanding report — well-researched, neatly formatted.',
+    9,  'Articulate and precise in both written and verbal communication.',
+    13, 'Completed an online UX certification on own initiative.',
+    13, 'Organised work using Trello; met all sprint goals.',
+    14, 'Punctual and proactive in meeting every deadline.',
+    'Nurul Ain is one of the best interns we have had. Professional, talented, and a joy to work with.'
+);
+-- Siti's total: 9+9+9+14+9+13+13+14 = 90/100
+
+-- Dr. Lim (lecturer, id=4)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    2, 4,
+    9,  'High quality deliverables confirmed by supervisor feedback.',
+    8,  'Complied with all reported safety requirements.',
+    9,  'Excellent connection between HCI coursework and internship tasks.',
+    14, 'Best written report submitted this semester — a model for others.',
+    8,  'Clear, professional writing throughout.',
+    13, 'Showed impressive self-directed learning beyond requirements.',
+    12, 'Strong project planning evident in logbook entries.',
+    13, 'All university submission deadlines met well in advance.',
+    'Nurul Ain has demonstrated outstanding academic and professional growth during this internship.'
+);
+-- Dr. Lim's total: 9+8+9+14+8+13+12+13 = 86/100
+-- Nurul Ain's FINAL MARK: (90 + 86) / 2 = 88/100
+
+
+-- ---- INTERNSHIP 3: Kevin Tan (20703456) — supervisor only, lecturer pending ----
+
+-- Raj Kumar (industry_supervisor, id=2)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    3, 2,
+    6,  'Completed tasks but required frequent guidance.',
+    7,  'Followed safety protocols after initial reminders.',
+    6,  'Struggled to connect theoretical knowledge to practical tasks.',
+    9,  'Report is adequate but lacks depth in technical sections.',
+    6,  'Writing is understandable but informal in tone.',
+    10, 'Attended one workshop during the internship period.',
+    9,  'Task management was inconsistent in the first half.',
+    8,  'Missed two internal deadlines in the first month.',
+    'Kevin showed improvement over time but needs to work on initiative and independent problem-solving.'
+);
+-- Raj's total: 6+7+6+9+6+10+9+8 = 61/100
+-- Dr. Amirah (id=5) has NOT submitted yet — intentional for testing pending state
+
+
+-- ---- INTERNSHIP 4: Priya (20704567) ----
+
+-- Siti Rahimah (industry_supervisor, id=3)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    4, 3,
+    7,  'Completed data pipeline tasks with moderate supervision.',
+    8,  'Good awareness of data security and privacy requirements.',
+    8,  'Applied machine learning concepts from coursework effectively.',
+    11, 'Report is well-written but the methodology section is thin.',
+    7,  'Clear writing; occasional grammatical errors.',
+    11, 'Completed an online Python data science course mid-internship.',
+    10, 'Planning was adequate; some scope creep in final weeks.',
+    11, 'Generally punctual; one late submission noted.',
+    'Priya is a competent intern with a good grasp of data concepts. Would benefit from stronger documentation habits.'
+);
+-- Siti's total: 7+8+8+11+7+11+10+11 = 73/100
+
+-- Dr. Amirah (lecturer, id=5)
+INSERT INTO assessment (
+    internship_id, assessor_id,
+    task_projects,            task_projects_comment,
+    health_safety,            health_safety_comment,
+    theoretical_knowledge,    theoretical_knowledge_comment,
+    report_presentation,      report_presentation_comment,
+    clarity_of_language,      clarity_of_language_comment,
+    lifelong_learning,        lifelong_learning_comment,
+    project_management,       project_management_comment,
+    time_management,          time_management_comment,
+    overall_comments
+) VALUES (
+    4, 5,
+    8,  'Deliverables aligned well with internship objectives.',
+    8,  'No safety concerns raised during supervision visits.',
+    8,  'Strong theoretical foundation in data analysis is evident.',
+    12, 'Report demonstrates clear understanding of the internship scope.',
+    7,  'Writing is competent; recommend proofreading before final submission.',
+    11, 'Evidence of self-improvement through additional coursework.',
+    11, 'Logbook shows reasonable project planning throughout.',
+    11, 'Met all university deadlines consistently.',
+    'Priya has done well and her report reflects a mature understanding of data engineering practices.'
+);
+-- Dr. Amirah's total: 8+8+8+12+7+11+11+11 = 76/100
+-- Priya's FINAL MARK: (73 + 76) / 2 = 74.5/100
+
+-- Internships 5 (Haziq) and 6 (Chloe) have NO assessments yet
+-- Good for testing the "not yet assessed" state in your UI
