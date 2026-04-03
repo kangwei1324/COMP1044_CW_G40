@@ -2,5 +2,5 @@
     <div class="user-profile">
         Welcome, Admin User
     </div>
-    <a href="../auth/login.php" class="logout-btn">Logout</a>
+    <a href="../auth/logout.php" class="logout-btn">Logout</a>
 </header>
