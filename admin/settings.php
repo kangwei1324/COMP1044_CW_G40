@@ -9,26 +9,12 @@
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">IRMS Portal</div>
-            <ul class="sidebar-menu">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="programmes.php">Programmes</a></li>
-                <li><a href="students.php">Students</a></li>
-                <li><a href="assessors.php">Assessors</a></li>
-                <li><a href="internships.php">Internships</a></li>
-                <li><a href="settings.php" class="active">Settings</a></li>
-            </ul>
-        </aside>
+        <?php include '../components/sidebar_admin.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="top-nav">
-                <div class="user-profile">
-                    Welcome, Admin User
-                </div>
-                <a href="../index.html" class="logout-btn">Logout</a>
-            </header>
+            <!-- header -->
+             <?php include '../components/header_admin.php'; ?>
 
             <div class="content-area">
                 <div class="page-header">
