@@ -18,23 +18,13 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">IRMS Portal</div>
-            <ul class="sidebar-menu">
-                <li><a href="dashboard.php">Dashboard / List</a></li>
-                <li><a href="settings.php">Settings</a></li>
-            </ul>
-        </aside>
+        <!-- sidebar -->
+        <?php include '../components/sidebar_assessor.php' ?>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="top-nav">
-                <div class="user-profile">
-                    Welcome User
-                </div>
-                <a href="../index.html" class="logout-btn">Logout</a>
-            </header>
+            <!-- header -->
+            <?php include '../components/header_assessor.php'; ?>
 
             <div class="content-area">
                 <div class="page-header">
