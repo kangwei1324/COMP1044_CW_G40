@@ -30,41 +30,41 @@
                     <h2>Your Evaluations</h2>
                     <p style="color: var(--text-muted); margin-bottom: 20px;">Select a student from your assigned list to begin the evaluation process.</p>
                     
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                    <div class="table-responsive">
+                        <table class="irms-table">
                             <thead>
-                                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                    <th style="padding: 12px 16px; font-weight: 600;">Student ID</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Name</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Programme</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Company</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Status</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Action</th>
+                                <tr class="table-header-row">
+                                    <th class="table-header-cell">Student ID</th>
+                                    <th class="table-header-cell">Name</th>
+                                    <th class="table-header-cell">Programme</th>
+                                    <th class="table-header-cell">Company</th>
+                                    <th class="table-header-cell">Status</th>
+                                    <th class="table-header-cell">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px;">STU1001</td>
-                                    <td style="padding: 16px;">John Doe</td>
-                                    <td style="padding: 16px;">Computer Science</td>
-                                    <td style="padding: 16px;">TechCorp Inc.</td>
-                                    <td style="padding: 16px;">
-                                        <span style="background-color: #fffbeb; color: #b45309; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: 600;">Pending</span>
+                                <tr class="table-body-row">
+                                    <td class="table-cell">STU1001</td>
+                                    <td class="table-cell">John Doe</td>
+                                    <td class="table-cell">Computer Science</td>
+                                    <td class="table-cell">TechCorp Inc.</td>
+                                    <td class="table-cell">
+                                        <span class="badge badge-warning">Pending</span>
                                     </td>
-                                    <td style="padding: 16px;">
-                                        <a href="evaluate.html?student_id=STU1001" class="btn btn-primary" style="padding: 8px 16px; display:inline-block; text-decoration:none; font-size: 13px;">Evaluate</a>
+                                    <td class="table-cell">
+                                        <a href="evaluate.php?student_id=STU1001" class="btn btn-primary" style="padding: 8px 16px; width: auto; font-size: 13px;">Evaluate</a>
                                     </td>
                                 </tr>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px;">STU1002</td>
-                                    <td style="padding: 16px;">Jane Smith</td>
-                                    <td style="padding: 16px;">Information Tech</td>
-                                    <td style="padding: 16px;">Cloud Solutions Ltd</td>
-                                    <td style="padding: 16px;">
-                                        <span style="background-color: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: 600;">Completed</span>
+                                <tr class="table-body-row">
+                                    <td class="table-cell">STU1002</td>
+                                    <td class="table-cell">Jane Smith</td>
+                                    <td class="table-cell">Information Tech</td>
+                                    <td class="table-cell">Cloud Solutions Ltd</td>
+                                    <td class="table-cell">
+                                        <span class="badge badge-success">Completed</span>
                                     </td>
-                                    <td style="padding: 16px;">
-                                        <a href="view_result.html?student_id=STU1002" style="color: var(--primary-color); text-decoration: none; font-weight: 600; font-size: 14px;">View Result</a>
+                                    <td class="table-cell">
+                                        <a href="view_result.php?student_id=STU1002" class="action-edit" style="font-weight: 600; font-size: 14px;">View Result</a>
                                     </td>
                                 </tr>
                             </tbody>

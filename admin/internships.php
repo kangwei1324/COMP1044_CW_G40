@@ -89,42 +89,42 @@
                         </select>
                     </div>
 
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
+                    <div class="table-responsive">
+                        <table class="irms-table">
                             <thead>
-                                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                    <th style="padding: 12px 16px; font-weight: 600;">Student</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Assessor</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Company</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Period</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Result Status</th>
-                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Actions</th>
+                                <tr class="table-header-row">
+                                    <th class="table-header-cell">Student</th>
+                                    <th class="table-header-cell">Assessor</th>
+                                    <th class="table-header-cell">Company</th>
+                                    <th class="table-header-cell">Period</th>
+                                    <th class="table-header-cell">Result Status</th>
+                                    <th class="table-header-cell text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; font-weight: 500;">STU1001 <br><span style="color: var(--text-muted); font-size: 13px; font-weight: normal;">John Doe</span></td>
-                                    <td style="padding: 16px;">Dr. Alan Smith</td>
-                                    <td style="padding: 16px; color: var(--text-muted);">TechCorp Inc.</td>
-                                    <td style="padding: 16px; font-size: 14px;">Sem 2, 2024</td>
-                                    <td style="padding: 16px;">
-                                        <span style="background-color: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Awaiting Marks</span>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-medium">STU1001 <br><span class="subtitle">John Doe</span></td>
+                                    <td class="table-cell">Dr. Alan Smith</td>
+                                    <td class="table-cell-muted">TechCorp Inc.</td>
+                                    <td class="table-cell font-14">Sem 2, 2024</td>
+                                    <td class="table-cell">
+                                        <span class="badge badge-muted">Awaiting Marks</span>
                                     </td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="#" style="color: var(--primary-color); margin-right: 12px; text-decoration: none; font-size: 14px; font-weight: 500;">Edit Params</a>
-                                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-size: 14px; font-weight: 500;">Unassign</a>
+                                    <td class="table-actions-cell">
+                                        <a href="#" class="action-edit">Edit Params</a>
+                                        <a href="#" class="action-revoke">Unassign</a>
                                     </td>
                                 </tr>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; font-weight: 500;">STU1002 <br><span style="color: var(--text-muted); font-size: 13px; font-weight: normal;">Jane Smith</span></td>
-                                    <td style="padding: 16px;">Prof. Sarah Jenkins</td>
-                                    <td style="padding: 16px; color: var(--text-muted);">Cloud Solutions Ltd</td>
-                                    <td style="padding: 16px; font-size: 14px;">Sem 2, 2024</td>
-                                    <td style="padding: 16px;">
-                                        <span style="background-color: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Evaluated (85%)</span>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-medium">STU1002 <br><span class="subtitle">Jane Smith</span></td>
+                                    <td class="table-cell">Prof. Sarah Jenkins</td>
+                                    <td class="table-cell-muted">Cloud Solutions Ltd</td>
+                                    <td class="table-cell font-14">Sem 2, 2024</td>
+                                    <td class="table-cell">
+                                        <span class="badge badge-success">Evaluated (85%)</span>
                                     </td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="../assessor/view_result.php?student_id=STU1002" style="color: var(--primary-color); text-decoration: none; font-size: 14px; font-weight: 600;">View Result</a>
+                                    <td class="table-actions-cell">
+                                        <a href="../assessor/view_result.php?student_id=STU1002" class="action-edit" style="font-weight: 600;">View Result</a>
                                     </td>
                                 </tr>
                             </tbody>

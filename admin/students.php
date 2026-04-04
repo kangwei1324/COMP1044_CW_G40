@@ -62,24 +62,24 @@
                         <button class="btn btn-primary" style="width: auto; padding: 12px 16px;">Search</button>
                     </div>
 
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+                    <div class="table-responsive">
+                        <table class="irms-table">
                             <thead>
-                                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                    <th style="padding: 12px 16px; font-weight: 600;">Student ID</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Name</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Programme</th>
-                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Actions</th>
+                                <tr class="table-header-row">
+                                    <th class="table-header-cell">Student ID</th>
+                                    <th class="table-header-cell">Name</th>
+                                    <th class="table-header-cell">Programme</th>
+                                    <th class="table-header-cell text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; font-weight: 600; color: var(--text-dark);">STU1001</td>
-                                    <td style="padding: 16px;">John Doe</td>
-                                    <td style="padding: 16px; color: var(--text-muted);">Bachelor of Computer Science</td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="#" style="color: var(--primary-color); margin-right: 12px; text-decoration: none; font-size: 14px; font-weight: 500;">Edit</a>
-                                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-size: 14px; font-weight: 500;">Delete</a>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-medium" style="color: var(--text-dark);">STU1001</td>
+                                    <td class="table-cell">John Doe</td>
+                                    <td class="table-cell-muted">Bachelor of Computer Science</td>
+                                    <td class="table-actions-cell">
+                                        <a href="#" class="action-edit">Edit</a>
+                                        <a href="#" class="action-revoke">Delete</a>
                                     </td>
                                 </tr>
                             </tbody>

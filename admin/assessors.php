@@ -1,6 +1,22 @@
 <?php
     $required_role = 'admin';
     include '../includes/auth_check.php';
+    include '../config/db.php';
+
+    $sql = "SELECT * FROM user WHERE role='industry_supervisor' OR role='lecturer'";
+    $result = $conn->query($sql);
+    
+    // while ($row = $result->fetch_assoc()) {
+    //     echo"<tr>";
+    //     echo"<td>" . $row['user_id'] . "</td>";
+    //     echo"</tr>";
+    //     echo"<tr>";
+    //     echo"<td>" . $row['username'] . "</td>";
+    //     echo"</tr>";
+    //     echo"<tr>";
+    //     echo"<td>" . $row['fullname'] . "</td>";
+    //     echo"</tr>";
+    // }
 ?>
 
 <!DOCTYPE html>
@@ -53,24 +69,24 @@
 
                 <!-- Data Table -->
                 <div class="card">
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                    <div class="table-responsive">
+                        <table class="irms-table">
                             <thead>
-                                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                    <th style="padding: 12px 16px; font-weight: 600;">System ID</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Username</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Full Name</th>
-                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Actions</th>
+                                <tr class="table-header-row">
+                                    <th class="table-header-cell">System ID</th>
+                                    <th class="table-header-cell">Username</th>
+                                    <th class="table-header-cell">Full Name</th>
+                                    <th class="table-header-cell text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; color: var(--text-muted);">U002</td>
-                                    <td style="padding: 16px; font-weight: 500;">assessor_smith</td>
-                                    <td style="padding: 16px;">Dr. Alan Smith</td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="#" style="color: var(--primary-color); margin-right: 12px; text-decoration: none; font-size: 14px; font-weight: 500;">Edit</a>
-                                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-size: 14px; font-weight: 500;">Revoke Access</a>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-muted">U002</td>
+                                    <td class="table-cell-medium">assessor_smith</td>
+                                    <td class="table-cell">Dr. Alan Smith</td>
+                                    <td class="table-actions-cell">
+                                        <a href="#" class="action-edit">Edit</a>
+                                        <a href="#" class="action-revoke">Revoke Access</a>
                                     </td>
                                 </tr>
                             </tbody>

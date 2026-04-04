@@ -42,30 +42,30 @@
 
                 <!-- Data Table -->
                 <div class="card">
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                    <div class="table-responsive">
+                        <table class="irms-table">
                             <thead>
-                                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                    <th style="padding: 12px 16px; font-weight: 600;">ID</th>
-                                    <th style="padding: 12px 16px; font-weight: 600;">Programme Name</th>
-                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Actions</th>
+                                <tr class="table-header-row">
+                                    <th class="table-header-cell">ID</th>
+                                    <th class="table-header-cell">Programme Name</th>
+                                    <th class="table-header-cell text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; color: var(--text-muted);">1</td>
-                                    <td style="padding: 16px; font-weight: 500;">Bachelor of Computer Science (Hons)</td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="#" style="color: var(--primary-color); margin-right: 12px; text-decoration: none; font-size: 14px; font-weight: 500;">Edit</a>
-                                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-size: 14px; font-weight: 500;">Delete</a>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-muted">1</td>
+                                    <td class="table-cell-medium">Bachelor of Computer Science (Hons)</td>
+                                    <td class="table-actions-cell">
+                                        <a href="#" class="action-edit">Edit</a>
+                                        <a href="#" class="action-revoke">Delete</a>
                                     </td>
                                 </tr>
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 16px; color: var(--text-muted);">2</td>
-                                    <td style="padding: 16px; font-weight: 500;">Bachelor of Information Technology</td>
-                                    <td style="padding: 16px; text-align: right;">
-                                        <a href="#" style="color: var(--primary-color); margin-right: 12px; text-decoration: none; font-size: 14px; font-weight: 500;">Edit</a>
-                                        <a href="#" style="color: var(--danger-color); text-decoration: none; font-size: 14px; font-weight: 500;">Delete</a>
+                                <tr class="table-body-row">
+                                    <td class="table-cell-muted">2</td>
+                                    <td class="table-cell-medium">Bachelor of Information Technology</td>
+                                    <td class="table-actions-cell">
+                                        <a href="#" class="action-edit">Edit</a>
+                                        <a href="#" class="action-revoke">Delete</a>
                                     </td>
                                 </tr>
                             </tbody>
