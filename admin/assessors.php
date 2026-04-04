@@ -1,4 +1,7 @@
-<?php include '../includes/auth_check.php' ?>
+<?php
+    $required_role = 'admin';
+    include '../includes/auth_check.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
