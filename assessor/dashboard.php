@@ -28,7 +28,7 @@
 
                 <div class="card">
                     <h2>Your Evaluations</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Select a student from your assigned list to begin the evaluation process.</p>
+                    <p class="card-description">Select a student from your assigned list to begin the evaluation process.</p>
                     
                     <div class="table-responsive">
                         <table class="irms-table">
@@ -52,7 +52,7 @@
                                         <span class="badge badge-warning">Pending</span>
                                     </td>
                                     <td class="table-cell">
-                                        <a href="evaluate.php?student_id=STU1001" class="btn btn-primary" style="padding: 8px 16px; width: auto; font-size: 13px;">Evaluate</a>
+                                        <a href="evaluate.php?student_id=STU1001" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
                                     </td>
                                 </tr>
                                 <tr class="table-body-row">
@@ -64,7 +64,7 @@
                                         <span class="badge badge-success">Completed</span>
                                     </td>
                                     <td class="table-cell">
-                                        <a href="view_result.php?student_id=STU1002" class="action-edit" style="font-weight: 600; font-size: 14px;">View Result</a>
+                                        <a href="view_result.php?student_id=STU1002" class="action-edit font-semibold font-14">View Result</a>
                                     </td>
                                 </tr>
                             </tbody>

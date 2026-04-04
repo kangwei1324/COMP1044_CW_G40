@@ -24,13 +24,13 @@
             <div class="content-area">
                 <div class="page-header">
                     <h1 class="page-title">Manage Internships (Assessor Assignments)</h1>
-                    <button class="btn btn-primary" style="width: auto;" onclick="document.getElementById('addForm').style.display='block'">+ Assign Internship</button>
+                    <button class="btn btn-primary btn-auto" onclick="document.getElementById('addForm').style.display='block'">+ Assign Internship</button>
                 </div>
 
                 <!-- Add Form (Hidden by default) -->
-                <div class="card" id="addForm" style="display: none; background: #f8fafc; border: 1px solid var(--border-color);">
+                <div class="card collapse-form" id="addForm">
                     <h3 style="margin-bottom: 20px;">Assign Assessor to Student Internship</h3>
-                    <form style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <form class="form-grid">
                         
                         <!-- Row 1: Student and Assessor Dropdowns -->
                         <div class="form-group">
@@ -51,7 +51,7 @@
                         </div>
 
                         <!-- Row 2: Company Details -->
-                        <div class="form-group" style="grid-column: span 2;">
+                        <div class="form-group form-span-2">
                             <label>Company Name</label>
                             <input type="text" class="form-control" placeholder="e.g. Acme Corporation" required>
                         </div>
@@ -70,19 +70,19 @@
                             <input type="number" class="form-control" placeholder="e.g. 2024" value="2024" required>
                         </div>
 
-                        <div style="grid-column: span 2; display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
-                            <button type="button" class="btn" style="width: auto; background: white; border: 1px solid #e2e8f0; color: #64748b;" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
-                            <button type="button" class="btn btn-primary" style="width: auto;">Save Assignment</button>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary btn-auto" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-auto">Save Assignment</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Data Table -->
                 <div class="card">
-                    <div style="margin-bottom: 20px; display: flex; gap: 12px; justify-content: space-between;">
-                        <input type="text" class="form-control" placeholder="Search Assignments by Student or Company..." style="max-width: 400px;">
+                    <div class="search-container justify-between">
+                        <input type="text" class="form-control max-w-400" placeholder="Search Assignments by Student or Company...">
                         
-                        <select class="form-control" style="width: auto;">
+                        <select class="form-control btn-auto">
                             <!-- Filter dropdown simulation -->
                             <option value="">Filter by Assessor: All</option>
                             <option value="2">Dr. Alan Smith</option>
@@ -124,7 +124,7 @@
                                         <span class="badge badge-success">Evaluated (85%)</span>
                                     </td>
                                     <td class="table-actions-cell">
-                                        <a href="../assessor/view_result.php?student_id=STU1002" class="action-edit" style="font-weight: 600;">View Result</a>
+                                        <a href="../assessor/view_result.php?student_id=STU1002" class="action-edit font-semibold">View Result</a>
                                     </td>
                                 </tr>
                             </tbody>

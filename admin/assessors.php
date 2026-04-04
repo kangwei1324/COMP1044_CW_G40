@@ -40,13 +40,13 @@
             <div class="content-area">
                 <div class="page-header">
                     <h1 class="page-title">Manage Assessor Accounts</h1>
-                    <button class="btn btn-primary" style="width: auto;" onclick="document.getElementById('addForm').style.display='block'">+ Add Assessor</button>
+                    <button class="btn btn-primary btn-auto" onclick="document.getElementById('addForm').style.display='block'">+ Add Assessor</button>
                 </div>
 
                 <!-- Add Form -->
-                <div class="card" id="addForm" style="display: none; background: #f8fafc; border: 1px solid var(--border-color);">
+                <div class="card collapse-form" id="addForm">
                     <h3 style="margin-bottom: 20px;">Register New Assessor</h3>
-                    <form style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <form class="form-grid">
                         <div class="form-group">
                             <label>Username (Login ID)</label>
                             <input type="text" class="form-control" placeholder="e.g. drsmith">
@@ -55,14 +55,14 @@
                             <label>Full Name</label>
                             <input type="text" class="form-control" placeholder="e.g. Dr. Alan Smith">
                         </div>
-                        <div class="form-group" style="grid-column: span 2;">
+                        <div class="form-group form-span-2">
                             <label>Temporary Password</label>
                             <input type="password" class="form-control" placeholder="Set a temporary password">
-                            <small style="color: var(--text-muted); display: block; margin-top: 6px;">Assessors can change this upon their first login in the Settings menu.</small>
+                            <small class="card-description" style="display: block; margin-top: 6px;">Assessors can change this upon their first login in the Settings menu.</small>
                         </div>
-                        <div style="grid-column: span 2; display: flex; gap: 12px; justify-content: flex-end;">
-                            <button type="button" class="btn" style="width: auto; background: white; border: 1px solid #e2e8f0; color: #64748b;" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
-                            <button type="button" class="btn btn-primary" style="width: auto;">Create Account</button>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary btn-auto" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-auto">Create Account</button>
                         </div>
                     </form>
                 </div>

@@ -28,7 +28,7 @@
 
                 <div class="card">
                     <h2>System Overview</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Welcome to the Internship Result Management System. Use the sidebar to navigate the different management modules.</p>
+                    <p class="card-description">Welcome to the Internship Result Management System. Use the sidebar to navigate the different management modules.</p>
                     
                     <div class="stats-grid">
                         <!-- Mock Stat Cards -->

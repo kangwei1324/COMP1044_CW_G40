@@ -27,16 +27,15 @@
                     <button class="btn btn-primary" style="width: auto;" onclick="document.getElementById('addForm').style.display='block'">+ Add New Programme</button>
                 </div>
 
-                <!-- Add Form (Hidden by default) -->
-                <div class="card" id="addForm" style="display: none; background: #f8fafc; border: 1px solid var(--border-color);">
-                    <h3 style="margin-bottom: 16px;">Add New Programme</h3>
-                    <form style="display: flex; gap: 16px; align-items: flex-end;">
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <div class="card collapse-form" id="addForm">
+                    <h3 class="mb-20">Add New Programme</h3>
+                    <form class="display-flex gap-16 align-end">
+                        <div class="form-group flex-1 mb-0">
                             <label>Programme Name</label>
                             <input type="text" class="form-control" placeholder="e.g. Bachelor of Computer Science">
                         </div>
-                        <button type="button" class="btn btn-primary" style="width: auto;">Save</button>
-                        <button type="button" class="btn" style="width: auto; background: white; border: 1px solid #e2e8f0; color: #64748b;" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-auto">Save</button>
+                        <button type="button" class="btn btn-secondary btn-auto" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
                     </form>
                 </div>
 
