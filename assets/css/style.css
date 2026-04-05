@@ -147,6 +147,12 @@ body {
   border-color: #f87171;
 }
 
+.alert-success {
+            color: #065f46;
+            background-color: #f0fdf4;
+            border-color: #34d399;
+        }
+
 /* Dashboard Global Layout */
 .app-container {
   display: flex;
