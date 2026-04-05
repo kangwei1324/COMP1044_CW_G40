@@ -24,7 +24,7 @@
             <div class="content-area">
                 <div class="page-header">
                     <h1 class="page-title">Manage Academic Programmes</h1>
-                    <button class="btn btn-primary" style="width: auto;" onclick="document.getElementById('addForm').style.display='block'">+ Add New Programme</button>
+                    <button class="btn btn-primary w-auto" onclick="document.getElementById('addForm').style.display='block'">+ Add New Programme</button>
                 </div>
 
                 <div class="card collapse-form" id="addForm">

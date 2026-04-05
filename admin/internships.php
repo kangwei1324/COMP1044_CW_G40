@@ -29,7 +29,7 @@
 
                 <!-- Add Form (Hidden by default) -->
                 <div class="card collapse-form" id="addForm">
-                    <h3 style="margin-bottom: 20px;">Assign Assessor to Student Internship</h3>
+                    <h3 class="mb-20">Assign Assessor to Student Internship</h3>
                     <form class="form-grid">
                         
                         <!-- Row 1: Student and Assessor Dropdowns -->

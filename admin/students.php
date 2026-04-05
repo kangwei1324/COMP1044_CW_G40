@@ -29,7 +29,7 @@
 
                 <!-- Add Form (Hidden by default) -->
                 <div class="card collapse-form" id="addForm">
-                    <h3 style="margin-bottom: 20px;">Register New Student</h3>
+                    <h3 class="mb-20">Register New Student</h3>
                     <form class="form-grid">
                         <div class="form-group">
                             <label>Student ID (Matric No.)</label>
@@ -73,7 +73,7 @@
                             </thead>
                             <tbody>
                                 <tr class="table-body-row">
-                                    <td class="table-cell-medium" style="color: var(--text-dark);">STU1001</td>
+                                    <td class="table-cell-medium text-dark">STU1001</td>
                                     <td class="table-cell">John Doe</td>
                                     <td class="table-cell-muted">Bachelor of Computer Science</td>
                                     <td class="table-actions-cell">

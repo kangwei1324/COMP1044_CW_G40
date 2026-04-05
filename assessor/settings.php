@@ -26,8 +26,8 @@
                     <h1 class="page-title">My Account Settings</h1>
                 </div>
 
-                <div class="card" style="max-width: 600px;">
-                    <h3 style="margin-bottom: 24px; color: var(--text-dark); border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Change Password</h3>
+                <div class="card max-w-600">
+                    <h3 class="card-header-sep">Change Password</h3>
                     
                     <form>
                         <div class="form-group">
@@ -45,7 +45,7 @@
                             <input type="password" class="form-control" required>
                         </div>
 
-                        <div style="margin-top: 30px;">
+                        <div class="mt-30">
                             <button type="button" class="btn btn-primary">Update Password</button>
                         </div>
                     </form>

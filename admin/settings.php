@@ -46,7 +46,7 @@
                         </div>
 
                         <!-- Info Update Option -->
-                        <h3 class="card-header-sep" style="margin-top: 40px;">Profile Info</h3>
+                        <h3 class="card-header-sep mt-40">Profile Info</h3>
 
                         <div class="form-group">
                             <label>Full Name</label>

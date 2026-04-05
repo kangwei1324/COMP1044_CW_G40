@@ -45,7 +45,7 @@
 
                 <!-- Add Form -->
                 <div class="card collapse-form" id="addForm">
-                    <h3 style="margin-bottom: 20px;">Register New Assessor</h3>
+                    <h3 class="mb-20">Register New Assessor</h3>
                     <form class="form-grid">
                         <div class="form-group">
                             <label>Username (Login ID)</label>
@@ -58,7 +58,7 @@
                         <div class="form-group form-span-2">
                             <label>Temporary Password</label>
                             <input type="password" class="form-control" placeholder="Set a temporary password">
-                            <small class="card-description" style="display: block; margin-top: 6px;">Assessors can change this upon their first login in the Settings menu.</small>
+                            <small class="card-description d-block mt-4">Assessors can change this upon their first login in the Settings menu.</small>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary btn-auto" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>

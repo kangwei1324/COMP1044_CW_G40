@@ -10,16 +10,6 @@
     <title>View Student Result - IRMS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        /* Print Styles */
-        @media print {
-            .sidebar, .top-nav, .logout-btn, .page-header button {
-                display: none !important;
-            }
-            .main-content { margin: 0; padding: 0; }
-            .card { box-shadow: none; border: 1px solid #000; }
-        }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -34,7 +24,7 @@
             <div class="content-area">
                 <div class="page-header">
                     <div>
-                        <button onclick="window.history.back()" class="back-link" style="background:none; border:none; text-decoration: underline; cursor: pointer;">&larr; Back</button>
+                        <button onclick="window.history.back()" class="back-link btn-link-reset">&larr; Back</button>
                         <h1 class="page-title">Evaluation Result: Jane Smith (STU1002)</h1>
                     </div>
                     <button class="btn btn-secondary btn-auto btn-sm" onclick="window.print()">🖨️ Print Report</button>
@@ -56,37 +46,37 @@
                     
                     <table class="irms-result-table">
                         <tbody>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">1. Undertaking Tasks/Projects (10%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">8.5</td>
+                            <tr>
+                                <td>1. Undertaking Tasks/Projects (10%)</td>
+                                <td class="text-right font-semibold">8.5</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">2. Health and Safety (10%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">9.0</td>
+                            <tr>
+                                <td>2. Health and Safety (10%)</td>
+                                <td class="text-right font-semibold">9.0</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">3. Connectivity and Theoretical Knowledge (10%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">8.0</td>
+                            <tr>
+                                <td>3. Connectivity and Theoretical Knowledge (10%)</td>
+                                <td class="text-right font-semibold">8.0</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">4. Presentation of Report (15%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">13.0</td>
+                            <tr>
+                                <td>4. Presentation of Report (15%)</td>
+                                <td class="text-right font-semibold">13.0</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">5. Clarity of Language (10%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">9.0</td>
+                            <tr>
+                                <td>5. Clarity of Language (10%)</td>
+                                <td class="text-right font-semibold">9.0</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">6. Lifelong Learning Activities (15%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">12.5</td>
+                            <tr>
+                                <td>6. Lifelong Learning Activities (15%)</td>
+                                <td class="text-right font-semibold">12.5</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">7. Project Management (15%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">13.5</td>
+                            <tr>
+                                <td>7. Project Management (15%)</td>
+                                <td class="text-right font-semibold">13.5</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f1f5f9;">
-                                <td style="padding: 12px 0;">8. Time Management (15%)</td>
-                                <td style="padding: 12px 0; text-align: right; font-weight: 600;">14.0</td>
+                            <tr>
+                                <td>8. Time Management (15%)</td>
+                                <td class="text-right font-semibold">14.0</td>
                             </tr>
                             <tr class="total-row">
                                 <td>Total Score</td>
