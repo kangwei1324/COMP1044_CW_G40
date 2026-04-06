@@ -10,6 +10,19 @@
     $allowed_roles = ["industry_supervisor", "lecturer"];
     $success_msg = "";
 
+    // 2. Check for success flags in the URL (Post/Redirect/Get pattern)
+    if (isset($_GET['success'])) {
+
+        if ($_GET['success'] === 'added') {
+            $success_msg = "New assessor account has been created successfully!";
+        } elseif ($_GET['success'] === 'revoked') {
+            $success_msg = "Assessor account has been revoked successfully!";
+        }
+        
+    }
+
+
+
     // ADD NEW ASSESSOR (CREATE)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -44,9 +57,11 @@
             $stmt = $conn->prepare("INSERT INTO user (username, email, password, fullname, role) VALUES (?, ?, ?, ?, ?)");
             $stmt->bind_param("sssss", $username, $email, $hash, $fullname, $role);
 
-            // Execute and check for errors (like duplicate username/email)
+            // 5. Execute and Redirect (The "PRG" Pattern)
             if ($stmt->execute()) {
-                $success_msg = $fullname . " account created successfully!";
+                // We send a 'success' flag in the URL for the next page to catch
+                header("Location: assessors.php?success=added");
+                exit;
             } else {
                 if ($conn->errno === 1062) { // 1062 = Duplicate entry
                     $errors[] = "Error: That Username or Email is already registered.";
@@ -84,7 +99,9 @@
                 $del_stmt = $conn->prepare("DELETE FROM user WHERE user_id = ?");
                 $del_stmt->bind_param("i", $delete_id);
                 if ($del_stmt->execute()) {
-                    $success_msg = "Assessor account has been revoked successfully.";
+                    // We send a 'success' flag in the URL for the next page to catch
+                    header("Location: assessors.php?success=revoked");
+                    exit;
                 } else {
                     $errors[] = "System error: Something went wrong, please try again later.";
                 }
