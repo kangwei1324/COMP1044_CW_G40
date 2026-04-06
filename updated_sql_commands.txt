@@ -91,31 +91,31 @@ INSERT INTO programme (programme_name) VALUES
 INSERT INTO user (username, email, password, fullname, role) VALUES
     ('admin',
      'admin@university.edu.my',
-     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     '$2y$10$2/B46qGpWFS1MgelqELrJ.tkyZn9RSHeuDtKCuRj1aQ7dAtzppmR6',
      'System Administrator',
      'admin'),
 
     ('raj.kumar',
      'raj.kumar@techcorp.com.my',
-     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     '$2y$10$2/B46qGpWFS1MgelqELrJ.tkyZn9RSHeuDtKCuRj1aQ7dAtzppmR6',
      'Raj Kumar',
      'industry_supervisor'),
 
     ('siti.rahimah',
      'siti.rahimah@innovate.com.my',
-     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     '$2y$10$2/B46qGpWFS1MgelqELrJ.tkyZn9RSHeuDtKCuRj1aQ7dAtzppmR6',
      'Siti Rahimah Binti Aziz',
      'industry_supervisor'),
 
     ('dr.lim',
      'lim.weikang@university.edu.my',
-     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     '$2y$10$2/B46qGpWFS1MgelqELrJ.tkyZn9RSHeuDtKCuRj1aQ7dAtzppmR6',
      'Dr. Lim Wei Kang',
      'lecturer'),
 
     ('dr.amirah',
      'amirah.hassan@university.edu.my',
-     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+     '$2y$10$2/B46qGpWFS1MgelqELrJ.tkyZn9RSHeuDtKCuRj1aQ7dAtzppmR6',
      'Dr. Amirah Hassan',
      'lecturer');
 
