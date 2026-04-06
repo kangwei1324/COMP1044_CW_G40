@@ -26,8 +26,8 @@
                     <h1 class="page-title">Account Settings</h1>
                 </div>
 
-                <div class="card" style="max-width: 600px;">
-                    <h3 style="margin-bottom: 24px; color: var(--text-dark); border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Security</h3>
+                <div class="card max-w-600">
+                    <h3 class="card-header-sep">Security</h3>
                     
                     <form>
                         <div class="form-group">
@@ -46,15 +46,15 @@
                         </div>
 
                         <!-- Info Update Option -->
-                        <h3 style="margin-top: 40px; margin-bottom: 24px; color: var(--text-dark); border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Profile Info</h3>
+                        <h3 class="card-header-sep mt-40">Profile Info</h3>
 
                         <div class="form-group">
                             <label>Full Name</label>
                             <input type="text" class="form-control" value="Admin User" required>
                         </div>
 
-                        <div style="margin-top: 30px;">
-                            <button type="button" class="btn btn-primary">Save Changes</button>
+                        <div class="mt-24">
+                            <button type="button" class="btn btn-primary btn-auto">Save Changes</button>
                         </div>
                     </form>
                 </div>

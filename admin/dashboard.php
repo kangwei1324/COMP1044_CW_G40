@@ -28,21 +28,21 @@
 
                 <div class="card">
                     <h2>System Overview</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Welcome to the Internship Result Management System. Use the sidebar to navigate the different management modules.</p>
+                    <p class="card-description">Welcome to the Internship Result Management System. Use the sidebar to navigate the different management modules.</p>
                     
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div class="stats-grid">
                         <!-- Mock Stat Cards -->
-                        <div style="background: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                            <h3 style="color: var(--primary-color);">Total Students</h3>
-                            <p style="font-size: 24px; font-weight: bold; margin-top: 10px;">124</p>
+                        <div class="stat-card stat-card-primary">
+                            <h3 class="stat-label">Total Students</h3>
+                            <p class="stat-value">124</p>
                         </div>
-                        <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid var(--success-color);">
-                            <h3 style="color: var(--success-color);">Assessors</h3>
-                            <p style="font-size: 24px; font-weight: bold; margin-top: 10px;">18</p>
+                        <div class="stat-card stat-card-success">
+                            <h3 class="stat-label">Assessors</h3>
+                            <p class="stat-value">18</p>
                         </div>
-                        <div style="background: #fffbeb; padding: 20px; border-radius: 8px; border-left: 4px solid var(--warning-color);">
-                            <h3 style="color: var(--warning-color);">Pending Evaluations</h3>
-                            <p style="font-size: 24px; font-weight: bold; margin-top: 10px;">45</p>
+                        <div class="stat-card stat-card-warning">
+                            <h3 class="stat-label">Pending Evaluations</h3>
+                            <p class="stat-value">45</p>
                         </div>
                     </div>
                 </div>

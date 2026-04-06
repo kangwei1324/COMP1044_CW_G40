@@ -81,7 +81,7 @@
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
 
-            <div style="margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+            <div class="mt-24 font-14 text-muted-p text-center">
                 Protected system for University Staff & Assessors.
             </div>
         </div>
