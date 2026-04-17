@@ -1,4 +1,5 @@
 <?php
+    // check if user is an admin
     $required_role = 'admin';
     include '../includes/auth_check.php';
     include '../config/db.php';
@@ -6,11 +7,11 @@
     // Initialize variables
     $errors = [];
     // Only allow user to create assessor roles
-    // This also prevents users from using inspect element and adding their own invalid role.
+    // This also prevents users from using inspect element and adding their own invalid role when adding new assessors.
     $allowed_roles = ["industry_supervisor", "lecturer"];
     $success_msg = "";
 
-    // editing
+    // editing mode
     $edit_mode = false;
     $edit_username = $edit_fullname = $edit_email = "";
 
@@ -22,12 +23,13 @@
             $success_msg = "New assessor account has been created successfully!";
         } elseif ($_GET['success'] === 'revoked') {
             $success_msg = "Assessor account has been revoked successfully!";
-        } elseif ($_GET['success'] === 'updated') {
-            $success_msg = "Assessor account has been updated successfully!";
+        } elseif ($_GET['success'] === 'edited') {
+            $success_msg = "Assessor account has been edited successfully!";
         }
         
     }
 
+    // User enters editing mode for an assessor
     if(isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
@@ -59,92 +61,109 @@
 
 
 
-    // ADD NEW ASSESSOR (CREATE)
+    // User submits a form
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // 1. "Clean" the input (Sanitization)
+        // What action is the user trying to do?
+        $action = $_POST['action'] ?? '';
+
+        // 1. Clean Common Inputs
         $username = trim($_POST['username']);
         $email    = trim($_POST['email']);
         $fullname = trim($_POST['fullname']);
-        // $role     = trim($_POST['role']);
-        // $password = $_POST['password']; // Don't trim passwords as spaces might be intentional
 
-        // 2. Basic Validation
+        // 2. Common Validation
         if (empty($username)) $errors[] = "Username is required.";
         if (empty($email))    $errors[] = "Email is required.";
         if (empty($fullname)) $errors[] = "Full name is required.";
-        // if (empty($role))     $errors[] = "Please select a role.";
-        // if (empty($password)) $errors[] = "Temporary password is required.";
 
-        // 3. Advanced Validation
         if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Invalid email format.";
         }
-        // if (!in_array($role, $allowed_roles)) {
-        //     $errors[] = "Invalid role selected";
-        // }
 
-        if (isset($_POST['update_id'])) {
-            if (empty($errors)) {
-                $update_id = (int) $_POST['update_id'];
+        // 3. Action Specific Validation
+        if ($action == 'add') {
+            $role = trim($_POST['role'] ?? '');
+            $password = $_POST['password'] ?? '';
 
-                $update_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
-                $update_stmt->bind_param("sssi", $username, $email, $fullname, $update_id);
+            if (empty($role))     $errors[] = "Please select a role.";
+            if (empty($password)) $errors[] = "Temporary password is required.";
+            if (!in_array($role, $allowed_roles)) $errors[] = "Invalid role selected.";
+        }
 
-                if (isset($_POST['reset_password'])) {
-                    $password = "password123";
-                    $hash = password_hash($password, PASSWORD_DEFAULT);
-                    $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
-                    $reset_password_stmt->bind_param("si", $hash, $update_id);
-                    $reset_password_stmt->execute();
-                    $reset_password_stmt->close();
-                }
+        // 4. stop immediately if any errors occured
+        if (!empty($errors)) {
+            // Do Nothing.
+        } else {
+            // 5. Database Actions
 
-                if ($update_stmt->execute()) {
-                    $update_stmt->close();
-                    header("Location: assessors.php?success=updated");
-                    exit;
-                } else {
+            // Edit Assessor
+            if ($action == 'edit') {
+
+                $edit_id = (int) $_POST['edit_id'];
+
+                $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
+                $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
+
+                try {
+
+                    if ($edit_stmt->execute()) {
+
+                        if (isset($_POST['reset_password'])) {
+                            $password = "password123";
+                            $hash = password_hash($password, PASSWORD_DEFAULT);
+                            $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
+                            $reset_password_stmt->bind_param("si", $hash, $edit_id);
+                            $reset_password_stmt->execute();
+                        }
+                        header("Location: assessors.php?success=edited");
+                        exit;
+                    }
+
+                } catch (mysqli_sql_exception) {
+
                     if ($conn->errno === 1062) { // 1062 = Duplicate entry
                         $errors[] = "Error: That Username or Email is already registered.";
                     } else {
                         $errors[] = "System error: Something went wrong, please try again later.";
                     }
+
+                } finally {
+
+                    $edit_stmt->close();
+                    if (isset($_POST['reset_password'])) {
+                        $reset_password_stmt->close();
+                    }
+
                 }
-            }
-        } else {
-            
-            $role     = trim($_POST['role']);
-            $password = $_POST['password']; // Don't trim passwords as spaces might be intentional
 
-            if (empty($role))     $errors[] = "Please select a role.";
-            if (empty($password)) $errors[] = "Temporary password is required.";
+                
+            } elseif ($action == 'add') {
+                // Add New Assessor
 
-            if (!in_array($role, $allowed_roles)) $errors[] = "Invalid role selected.";
-
-
-            // 4. Database Security (Insertion)
-            if (empty($errors)) {
+                // 4. Database Security (Insertion)
                 // Hash the password
                 $hash = password_hash($password, PASSWORD_DEFAULT);
 
                 // Prepare the statement
-                $stmt = $conn->prepare("INSERT INTO user (username, email, password, fullname, role) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssss", $username, $email, $hash, $fullname, $role);
+                $add_stmt = $conn->prepare("INSERT INTO user (username, email, password, fullname, role) VALUES (?, ?, ?, ?, ?)");
+                $add_stmt->bind_param("sssss", $username, $email, $hash, $fullname, $role);
 
                 // 5. Execute and Redirect (The "PRG" Pattern)
-                if ($stmt->execute()) {
-                    // We send a 'success' flag in the URL for the next page to catch
-                    header("Location: assessors.php?success=added");
-                    exit;
-                } else {
+                try {
+                    if ($add_stmt->execute()) {
+                        $add_stmt->close();
+                        // We send a 'success' flag in the URL for the next page to catch
+                        header("Location: assessors.php?success=added");
+                        exit;
+                    }
+                } catch (mysqli_sql_exception) {
                     if ($conn->errno === 1062) { // 1062 = Duplicate entry
                         $errors[] = "Error: That Username or Email is already registered.";
                     } else {
                         $errors[] = "System error: Something went wrong, please try again later.";
                     }
                 }
-                $stmt->close();
             }
         }
     }
@@ -233,6 +252,7 @@
                     <?php endif; ?>
 
                     <form action="" method="post" class="form-grid">
+                        <input type="hidden" name="action" value="add">
                         <div class="form-group">
                             <label for="username">Username (Login ID)</label>
                             <input type="text" name="username" id="username" class="form-control" placeholder="e.g. drsmith" required>
@@ -280,18 +300,19 @@
                     <?php endif; ?>
 
                     <form action="" method="post" class="form-grid">
-                        <input type="hidden" name="update_id" value="<?= $edit_id ?>">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="edit_id" value="<?= $edit_id ?>">
                         <div class="form-group">
                             <label for="username">Username (Login ID)</label>
-                            <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($edit_username) ?>">
+                            <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($edit_username) ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="fullname">Full Name</label>
-                            <input type="text" name="fullname" id="fullname" class="form-control" value="<?= htmlspecialchars($edit_fullname) ?>">
+                            <input type="text" name="fullname" id="fullname" class="form-control" value="<?= htmlspecialchars($edit_fullname) ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($edit_email) ?>">
+                            <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($edit_email) ?>" required>
                         </div>
                         <div class="form-group form-span-2">
                             <label for="password">Reset Password</label>
