@@ -15,7 +15,7 @@
     // editing mode
     $edit_mode = false;
     $edit_username = $edit_fullname = $edit_email = "";
-
+    $action = $_POST['action'] ?? '';
 
     // 2. Check for success flags in the URL (Post/Redirect/Get pattern)
     if (isset($_GET['success'])) {
@@ -59,9 +59,6 @@
 
     // User submits a form
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        // What action is the user trying to do?
-        $action = $_POST['action'] ?? '';
 
         // 1. Clean Common Inputs
         $username = trim($_POST['username']);
@@ -228,20 +225,20 @@
                     <button class="btn btn-primary btn-auto" onclick="document.getElementById('addForm').style.display='block'">+ Add Assessor</button>
                 </div>
 
-                <!-- Add Form -->
-                <div class="card collapse-form" id="addForm">
-                    <h3 class="mb-20">Register New Assessor</h3>
-                    
-                    <!-- Feedback Messages -->
-                    <?php if (!empty($errors)): ?>
-                        <?php foreach($errors as $error): ?>
-                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <!-- Global Feedback Messages -->
+                <?php if (!empty($errors)): ?>
+                    <?php foreach($errors as $error): ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
 
-                    <?php if ($success_msg): ?>
-                        <div class="alert alert-success"><?= htmlspecialchars($success_msg) ?></div>
-                    <?php endif; ?>
+                <?php if ($success_msg): ?>
+                    <div class="alert alert-success"><?= htmlspecialchars($success_msg) ?></div>
+                <?php endif; ?>
+
+                <!-- Add Form -->
+                <div class="card collapse-form" id="addForm" <?= ($action === 'add' && !empty($errors)) ? 'style="display:block;"' : '' ?>>
+                    <h3 class="mb-20">Register New Assessor</h3>
 
                     <form action="" method="post" class="form-grid">
                         <input type="hidden" name="action" value="add">
@@ -277,23 +274,12 @@
                     </form>
                 </div>
 
-                <div class="card" style="display:<?= $edit_mode ? 'block' : 'none' ?>;" id="editForm">
+                <div class="card" style="display:<?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;" id="editForm">
                     <h3 class="mb-20">Edit Assessor</h3>
-                    
-                    <!-- Feedback Messages -->
-                    <?php if (!empty($errors)): ?>
-                        <?php foreach($errors as $error): ?>
-                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-
-                    <?php if ($success_msg): ?>
-                        <div class="alert alert-success"><?= htmlspecialchars($success_msg) ?></div>
-                    <?php endif; ?>
 
                     <form action="" method="post" class="form-grid">
                         <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="edit_id" value="<?= $edit_id ?>">
+                        <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group">
                             <label for="username">Username (Login ID)</label>
                             <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($edit_username) ?>" required>
