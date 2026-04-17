@@ -283,7 +283,7 @@
                     </form>
                 </div>
 
-                <div class="card" style="display:<?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;" id="editForm">
+                <div class="card collapse-form" style="display:<?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;" id="editForm">
                     <h3 class="mb-20">Edit Assessor</h3>
 
                     <form action="" method="post" class="form-grid">
