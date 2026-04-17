@@ -131,7 +131,7 @@
                 } finally {
 
                     $edit_stmt->close();
-                    if (isset($_POST['reset_password'])) {
+                    if (isset($reset_password_stmt)) {
                         $reset_password_stmt->close();
                     }
 
