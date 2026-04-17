@@ -3,6 +3,7 @@
     $required_role = 'admin';
     include '../includes/auth_check.php';
     include '../config/db.php';
+    include '../includes/functions.php';
 
     // Initialize variables
     $errors = [];
@@ -36,13 +37,8 @@
         if ($edit_id === $_SESSION['user_id']) {
             $errors[] = "You cannot edit your own account here.";
         } else {
-            $check_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
-            $check_stmt->bind_param("i", $edit_id);
-            $check_stmt->execute();
 
-            $check_result = $check_stmt->get_result();
-            $target_user = $check_result->fetch_assoc();
-            $check_stmt->close();
+            $target_user = get_user($conn, $edit_id);
 
             if (!$target_user) {
                 $errors[] = "User not found.";
@@ -51,9 +47,9 @@
             } else {
                 // safe to edit
                 $edit_mode = true;
-                $edit_username = $target_user['username'];
-                $edit_fullname = $target_user['fullname'];
-                $edit_email = $target_user['email'];
+                $edit_username = $_POST['username'] ?? $target_user['username'];
+                $edit_fullname = $_POST['fullname'] ?? $target_user['fullname'];
+                $edit_email    = $_POST['email']    ?? $target_user['email'];
 
             }
         }
@@ -178,13 +174,9 @@
 
         // Guard 2: Prevent deleting any admin account
         } else {
-            $check_stmt = $conn->prepare("SELECT role FROM user WHERE user_id = ?");
-            $check_stmt->bind_param("i", $delete_id);
-            $check_stmt->execute();
 
-            $check_result = $check_stmt->get_result();
-            $target_user  = $check_result->fetch_assoc();
-            $check_stmt->close();
+            $target_user  = get_user($conn, $delete_id);
+
 
             if (!$target_user) {
                 $errors[] = "User not found.";
