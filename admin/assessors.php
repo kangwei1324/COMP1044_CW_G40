@@ -95,41 +95,50 @@
 
                 $edit_id = (int) $_POST['edit_id'];
 
-                $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
-                $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
+                // Make sure user cannot bypass UI state to POST to a forbidden ID
+                $target_edit_user = get_user($conn, $edit_id);
+                if (!$target_edit_user) {
+                    $errors[] = "User not found.";
+                } elseif ($target_edit_user['role'] === 'admin') {
+                    $errors[] = "Cannot edit an admin account.";
+                } elseif ($edit_id === (int) $_SESSION['user_id']) {
+                    $errors[] = "Cannot edit your own account here.";
+                } else {
+                    $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
+                    $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
 
-                try {
+                    try {
 
-                    if ($edit_stmt->execute()) {
+                        if ($edit_stmt->execute()) {
 
-                        if (isset($_POST['reset_password'])) {
-                            $password = "password123";
-                            $hash = password_hash($password, PASSWORD_DEFAULT);
-                            $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
-                            $reset_password_stmt->bind_param("si", $hash, $edit_id);
-                            $reset_password_stmt->execute();
+                            if (isset($_POST['reset_password'])) {
+                                $password = "password123";
+                                $hash = password_hash($password, PASSWORD_DEFAULT);
+                                $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
+                                $reset_password_stmt->bind_param("si", $hash, $edit_id);
+                                $reset_password_stmt->execute();
+                            }
+                            header("Location: assessors.php?success=edited");
+                            exit;
                         }
-                        header("Location: assessors.php?success=edited");
-                        exit;
+
+                    } catch (mysqli_sql_exception) {
+
+                        if ($conn->errno === 1062) { // 1062 = Duplicate entry
+                            $errors[] = "Error: That Username or Email is already registered.";
+                        } else {
+                            $errors[] = "System error: Something went wrong, please try again later.";
+                        }
+
+                    } finally {
+
+                        $edit_stmt->close();
+                        if (isset($reset_password_stmt)) {
+                            $reset_password_stmt->close();
+                        }
+
                     }
-
-                } catch (mysqli_sql_exception) {
-
-                    if ($conn->errno === 1062) { // 1062 = Duplicate entry
-                        $errors[] = "Error: That Username or Email is already registered.";
-                    } else {
-                        $errors[] = "System error: Something went wrong, please try again later.";
-                    }
-
-                } finally {
-
-                    $edit_stmt->close();
-                    if (isset($reset_password_stmt)) {
-                        $reset_password_stmt->close();
-                    }
-
                 }
-
                 
             } elseif ($action == 'add') {
                 // Add New Assessor
@@ -244,22 +253,22 @@
                         <input type="hidden" name="action" value="add">
                         <div class="form-group">
                             <label for="username">Username (Login ID)</label>
-                            <input type="text" name="username" id="username" class="form-control" placeholder="e.g. drsmith" required>
+                            <input type="text" name="username" id="username" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['username'] ?? '') : '' ?>" placeholder="e.g. drsmith" required>
                         </div>
                         <div class="form-group">
                             <label for="fullname">Full Name</label>
-                            <input type="text" name="fullname" id="fullname" class="form-control" placeholder="e.g. Dr. Alan Smith" required>
+                            <input type="text" name="fullname" id="fullname" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['fullname'] ?? '') : '' ?>" placeholder="e.g. Dr. Alan Smith" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="e.g. alan12@gmail.com" required>
+                            <input type="email" name="email" id="email" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['email'] ?? '') : '' ?>" placeholder="e.g. alan12@gmail.com" required>
                         </div>
                         <div class="form-group">
                             <label for="role">Role</label>
                             <select name="role" id="role" class="form-control" required>
                                 <option value="">Select a Role</option>
-                                <option value="industry_supervisor">Industry Supervisor</option>
-                                <option value="lecturer">Lecturer</option>
+                                <option value="industry_supervisor" <?= ($action === 'add' && ($_POST['role'] ?? '') === 'industry_supervisor') ? 'selected' : '' ?>>Industry Supervisor</option>
+                                <option value="lecturer" <?= ($action === 'add' && ($_POST['role'] ?? '') === 'lecturer') ? 'selected' : '' ?>>Lecturer</option>
                             </select>
                         </div>
                         <div class="form-group form-span-2">
