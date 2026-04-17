@@ -107,6 +107,8 @@
                     $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
                     $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
 
+                    $redirect_url = null;
+
                     try {
 
                         if ($edit_stmt->execute()) {
@@ -118,8 +120,9 @@
                                 $reset_password_stmt->bind_param("si", $hash, $edit_id);
                                 $reset_password_stmt->execute();
                             }
-                            header("Location: assessors.php?success=edited");
-                            exit;
+
+                            $redirect_url = "assessors.php?success=edited";
+                        
                         }
 
                     } catch (mysqli_sql_exception) {
@@ -137,6 +140,12 @@
                             $reset_password_stmt->close();
                         }
 
+                        if ($redirect_url) {
+                            header("Location: $redirect_url");
+                            exit;
+                        }
+                        
+
                     }
                 }
                 
@@ -152,18 +161,25 @@
                 $add_stmt->bind_param("sssss", $username, $email, $hash, $fullname, $role);
 
                 // 5. Execute and Redirect (The "PRG" Pattern)
+                $redirect_url = null;
                 try {
                     if ($add_stmt->execute()) {
-                        $add_stmt->close();
+                        
                         // We send a 'success' flag in the URL for the next page to catch
-                        header("Location: assessors.php?success=added");
-                        exit;
+                        $redirect_url = "assessors.php?success=added";
+
                     }
                 } catch (mysqli_sql_exception) {
                     if ($conn->errno === 1062) { // 1062 = Duplicate entry
                         $errors[] = "Error: That Username or Email is already registered.";
                     } else {
                         $errors[] = "System error: Something went wrong, please try again later.";
+                    }
+                } finally {
+                    $add_stmt->close();
+                    if ($redirect_url) {
+                        header("Location: $redirect_url");
+                        exit;
                     }
                 }
             }
@@ -192,14 +208,29 @@
                 // Safe to delete
                 $del_stmt = $conn->prepare("DELETE FROM user WHERE user_id = ?");
                 $del_stmt->bind_param("i", $delete_id);
-                if ($del_stmt->execute()) {
-                    // We send a 'success' flag in the URL for the next page to catch
-                    header("Location: assessors.php?success=revoked");
-                    exit;
-                } else {
-                    $errors[] = "System error: Something went wrong, please try again later.";
+
+                $redirect_url = null;
+                try {
+                    if ($del_stmt->execute()) {
+                        $redirect_url = "assessors.php?success=revoked";
+                    } else {
+                        $errors[] = "System error: Something went wrong, please try again later.";
+                    }
+
+                } catch (mysqli_sql_exception) {
+                    if ($conn->errno == 1451) {
+                        $errors[] = "Cannot delete: This user is already assigned to students.";
+                    } else {
+                        $errors[] = "System error occurred.";
+                    }
+                } finally {
+                    $del_stmt->close();
+                    if ($redirect_url) {
+                        header("Location: $redirect_url");
+                        exit;
+                    }
                 }
-                $del_stmt->close();
+                
             }
         }
     }
