@@ -1,6 +1,23 @@
 <?php
+    // Error display for debugging
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL);
+
     $required_role = 'assessor';
     include '../includes/auth_check.php';
+    include '../config/db.php';
+    include '../includes/functions.php';
+
+    $user_id = $_SESSION['user_id'];
+    //echo "<h1>Debug: Logged in as User ID: " . $user_id . "</h1>";
+
+    $result = get_student_assesor($conn, $user_id);
+
+    // Evaluation mode
+    $edit_mode = false;
+    $edit_username = $edit_fullname = $edit_email = "";
+    $action = $_POST['action'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -42,6 +59,42 @@
                                     <th class="table-header-cell">Action</th>
                                 </tr>
                             </thead>
+
+                            
+                            <tbody>
+                                <?php while ($row = $result->fetch_assoc()): ?>
+                                    <?php
+                                        $status = htmlspecialchars($row['status']);
+                                        //$badge_class = ($status === 'Pending') ? 'badge-warning' : 'badge-success';
+                                    ?>
+
+                                    <tr class="table-body-row">
+                                        <td class="table-cell"><?= htmlspecialchars($row['student_id']) ?></td>
+                                        <td class="table-cell"><?= htmlspecialchars($row['student_name']) ?></td>
+                                        <td class="table-cell"><?= htmlspecialchars($row['programme_name']) ?></td>
+                                        <td class="table-cell"><?= htmlspecialchars($row['company_name']) ?></td>
+            
+                                        <td class="table-cell">
+                                            <?php if ($status === 'Pending'): ?>
+                                                <span class = "badge badge-warning">Pending</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-success">Completed</span>
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <td class="table-cell">
+                                            <?php if ($status === 'Pending'): ?>
+                                                <a href="evaluate.php?student_id=STU1001" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
+                                            <?php else: ?>
+                                                <a href="view_result.php?student_id=STU1002" class="action-edit font-semibold font-14">View Result</a>
+                                            <?php endif; ?>
+                                        </td>
+
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                            
+                            <!--                            
                             <tbody>
                                 <tr class="table-body-row">
                                     <td class="table-cell">STU1001</td>
@@ -68,6 +121,7 @@
                                     </td>
                                 </tr>
                             </tbody>
+                            -->
                         </table>
                     </div>
                 </div>
