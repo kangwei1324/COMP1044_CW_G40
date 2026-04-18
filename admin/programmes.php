@@ -38,6 +38,7 @@
 
     // 5. Handle Form Submissions (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
+        $stmt = null; // Clear any previous statement from GET handlers
         $prog_name = trim($_POST['prog_name'] ?? '');
 
         if (empty($prog_name)) {
@@ -51,12 +52,17 @@
                     $success_tag = "added";
                 } elseif ($action === 'edit') {
                     $edit_id = (int)$_POST['edit_id'];
-                    $stmt = $conn->prepare("UPDATE programme SET programme_name = ? WHERE programme_id = ?");
-                    $stmt->bind_param("si", $prog_name, $edit_id);
-                    $success_tag = "edited";
+                    
+                    if (isset($programme) && $prog_name === $programme['programme_name']) {
+                        $errors[] = "Error: The programme name is still the same.";
+                    } else {
+                        $stmt = $conn->prepare("UPDATE programme SET programme_name = ? WHERE programme_id = ?");
+                        $stmt->bind_param("si", $prog_name, $edit_id);
+                        $success_tag = "edited";
+                    }
                 }
 
-                if ($stmt->execute()) {
+                if (isset($stmt) && $stmt->execute()) {
                     $redirect_url = "programmes.php?success=" . $success_tag;
                 }
             } catch (mysqli_sql_exception $e) {
