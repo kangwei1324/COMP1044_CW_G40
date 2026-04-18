@@ -70,10 +70,8 @@ CREATE TABLE assessment (
 
     overall_comments            TEXT NOT NULL,
 
-    last_updated                TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-    status                      ENUM('Pending', 'Submitted') NOT NULL DEFAULT 'Pending',
-
+    last_updated                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (internship_id) REFERENCES internships(internship_id) ON DELETE RESTRICT,
     FOREIGN KEY (assessor_id)   REFERENCES user(user_id)          ON DELETE RESTRICT,
 
