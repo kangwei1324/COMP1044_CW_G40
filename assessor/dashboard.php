@@ -1,6 +1,16 @@
 <?php
+    // Error display for debugging
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL);
+
     $required_role = 'assessor';
     include '../includes/auth_check.php';
+    include '../config/db.php';
+    include '../includes/functions.php';
+
+    $user_id = $_SESSION['user_id'];
+    $result = get_student_assessor($conn, $user_id);
 ?>
 
 <!DOCTYPE html>
@@ -38,35 +48,54 @@
                                     <th class="table-header-cell">Name</th>
                                     <th class="table-header-cell">Programme</th>
                                     <th class="table-header-cell">Company</th>
+                                    <th class="table-header-cell">Semester / Year</th>
                                     <th class="table-header-cell">Status</th>
                                     <th class="table-header-cell">Action</th>
                                 </tr>
                             </thead>
+
+                            
                             <tbody>
-                                <tr class="table-body-row">
-                                    <td class="table-cell">STU1001</td>
-                                    <td class="table-cell">John Doe</td>
-                                    <td class="table-cell">Computer Science</td>
-                                    <td class="table-cell">TechCorp Inc.</td>
-                                    <td class="table-cell">
-                                        <span class="badge badge-warning">Pending</span>
-                                    </td>
-                                    <td class="table-cell">
-                                        <a href="evaluate.php?student_id=STU1001" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
-                                    </td>
-                                </tr>
-                                <tr class="table-body-row">
-                                    <td class="table-cell">STU1002</td>
-                                    <td class="table-cell">Jane Smith</td>
-                                    <td class="table-cell">Information Tech</td>
-                                    <td class="table-cell">Cloud Solutions Ltd</td>
-                                    <td class="table-cell">
-                                        <span class="badge badge-success">Completed</span>
-                                    </td>
-                                    <td class="table-cell">
-                                        <a href="view_result.php?student_id=STU1002" class="action-edit font-semibold font-14">View Result</a>
-                                    </td>
-                                </tr>
+                                <?php if ($result && $result->num_rows > 0): ?>
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <?php
+                                            $status = htmlspecialchars($row['status']);
+                                            $student_id = htmlspecialchars($row['student_id']);
+                                            $internship_id = htmlspecialchars($row['internship_id']);
+                                        ?>
+
+                                        <tr class="table-body-row">
+                                            <td class="table-cell"><?= $student_id ?></td>
+                                            <td class="table-cell"><?= htmlspecialchars($row['student_name']) ?></td>
+                                            <td class="table-cell"><?= htmlspecialchars($row['programme_name']) ?></td>
+                                            <td class="table-cell"><?= htmlspecialchars($row['company_name']) ?></td>
+                                            <td class="table-cell"><?= htmlspecialchars($row['semester']) . " / " . htmlspecialchars($row['internship_year']) ?></td>
+                
+                                            <td class="table-cell">
+                                                <?php if ($status === 'Pending'): ?>
+                                                    <span class="badge badge-warning">Pending</span>
+                                                <?php else: ?>
+                                                    <span class="badge badge-success">Completed</span>
+                                                <?php endif; ?>
+                                            </td>
+
+                                            <td class="table-cell">
+                                                <?php if ($status === 'Pending'): ?>
+                                                    <a href="evaluate.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
+                                                <?php else: ?>
+                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>" class="action-edit font-semibold font-14">View Result</a>
+                                                <?php endif; ?>
+                                            </td>
+
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" class="table-cell text-center" style="padding: 40px;">
+                                            <p class="text-muted">No students assigned for evaluation.</p>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

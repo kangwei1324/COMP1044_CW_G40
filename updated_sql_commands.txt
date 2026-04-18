@@ -1,9 +1,13 @@
+CREATE DATABASE IF NOT EXISTS comp1044_database;
+
+USE comp1044_database;
+
 CREATE TABLE programme (
     programme_id   INT AUTO_INCREMENT PRIMARY KEY,
     programme_name VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE user (
+CREATE TABLE `user` (
     user_id  INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     email    VARCHAR(255) UNIQUE NOT NULL,
@@ -64,10 +68,10 @@ CREATE TABLE assessment (
     time_management             INT  NOT NULL,
     time_management_comment     TEXT NULL,
 
-    overall_comments TEXT NOT NULL,
+    overall_comments            TEXT NOT NULL,
 
-    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
+    last_updated                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (internship_id) REFERENCES internships(internship_id) ON DELETE RESTRICT,
     FOREIGN KEY (assessor_id)   REFERENCES user(user_id)          ON DELETE RESTRICT,
 
