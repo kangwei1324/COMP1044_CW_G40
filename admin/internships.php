@@ -15,19 +15,19 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $student_id = (int) ($_POST['student_id'] ?? 0);
-        $lecturer_id = (int) ($_POST['lecturer_id'] ?? 0);
-        $supervisor_id = (int) ($_POST['supervisor_id'] ?? 0);
+        $student_id = trim($_POST['student_id'] ?? '');
+        $lecturer_id = trim($_POST['lecturer_id'] ?? '');
+        $supervisor_id = trim($_POST['supervisor_id'] ?? '');
         $company_name = trim($_POST['company_name'] ?? '');
-        $semester = $_POST['semester'] ?? '';
+        $semester = trim($_POST['semester'] ?? '');
         $internship_year = (int) ($_POST['internship_year'] ?? 0);
 
-        if (empty($student_id)) $errors[]      = "Please select a valid student.";
-        if (empty($lecturer_id)) $errors[]     = "Please select a valid lecturer.";
-        if (empty($supervisor_id)) $errors[]   = "Please select a valid industry supervisor.";
-        if (empty($company_name)) $errors[]    = "Please enter a company name.";
-        if (empty($semester)) $errors[]        = "Please select a valid semester.";
-        if (empty($internship_year)) $errors[] = "Please select a valid year.";
+        if (!ctype_digit($student_id))      $errors[] = "Please select a valid student.";
+        if (!ctype_digit($lecturer_id))     $errors[] = "Please select a valid lecturer.";
+        if (!ctype_digit($supervisor_id))   $errors[] = "Please select a valid industry supervisor.";
+        if (empty($company_name))           $errors[] = "Please enter a company name.";
+        if (empty($semester))               $errors[] = "Please select a valid semester.";
+        if ($internship_year < 2025)        $errors[] = "Please select a valid year.";
 
         if (!empty($errors)) {
             // Do Nothing.
