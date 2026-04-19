@@ -61,9 +61,9 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 1. Clean Common Inputs
-        $username = trim($_POST['username']);
-        $email    = trim($_POST['email']);
-        $fullname = trim($_POST['fullname']);
+        $username = trim($_POST['username'] ?? '');
+        $email    = trim($_POST['email'] ?? '');
+        $fullname = trim($_POST['fullname'] ?? '');
 
         // 2. Common Validation
         if (empty($username)) $errors[] = "Username is required.";
@@ -93,7 +93,7 @@
             // Edit Assessor
             if ($action == 'edit') {
 
-                $edit_id = (int) $_POST['edit_id'];
+                $edit_id = (int) ($_POST['edit_id'] ?? 0);
 
                 // Make sure user cannot bypass UI state to POST to a forbidden ID
                 $target_edit_user = get_user($conn, $edit_id);
@@ -135,17 +135,15 @@
 
                     } finally {
 
-                        $edit_stmt->close();
+                        if (isset($edit_stmt)) $edit_stmt->close();
                         if (isset($reset_password_stmt)) {
                             $reset_password_stmt->close();
                         }
+                    }
 
-                        if ($redirect_url) {
-                            header("Location: $redirect_url");
-                            exit;
-                        }
-                        
-
+                    if ($redirect_url) {
+                        header("Location: $redirect_url");
+                        exit;
                     }
                 }
                 
@@ -176,11 +174,12 @@
                         $errors[] = "System error: Something went wrong, please try again later.";
                     }
                 } finally {
-                    $add_stmt->close();
-                    if ($redirect_url) {
-                        header("Location: $redirect_url");
-                        exit;
-                    }
+                    if (isset($add_stmt)) $add_stmt->close();
+                }
+
+                if ($redirect_url) {
+                    header("Location: $redirect_url");
+                    exit;
                 }
             }
         }
@@ -224,13 +223,13 @@
                         $errors[] = "System error occurred.";
                     }
                 } finally {
-                    $del_stmt->close();
-                    if ($redirect_url) {
-                        header("Location: $redirect_url");
-                        exit;
-                    }
+                    if (isset($del_stmt)) $del_stmt->close();
                 }
-                
+
+                if ($redirect_url) {
+                    header("Location: $redirect_url");
+                    exit;
+                }
             }
         }
     }
