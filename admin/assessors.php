@@ -1,8 +1,8 @@
 <?php
     // check if user is an admin
     $required_role = 'admin';
-    include '../includes/auth_check.php';
     include '../config/db.php';
+    include '../includes/auth_check.php';
     include '../includes/functions.php';
 
     // Initialize variables
@@ -75,7 +75,7 @@
         }
 
         // 3. Action Specific Validation
-        if ($action == 'add') {
+        if ($action === 'add') {
             $role = trim($_POST['role'] ?? '');
             $password = $_POST['password'] ?? '';
 
@@ -91,7 +91,7 @@
             // 5. Database Actions
 
             // Edit Assessor
-            if ($action == 'edit') {
+            if ($action === 'edit') {
 
                 $edit_id = (int) ($_POST['edit_id'] ?? 0);
 
@@ -156,7 +156,7 @@
                     }
                 }
                 
-            } elseif ($action == 'add') {
+            } elseif ($action === 'add') {
                 // Add New Assessor
 
                 // 4. Database Security (Insertion)
