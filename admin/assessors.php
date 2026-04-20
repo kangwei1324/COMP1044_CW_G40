@@ -104,46 +104,55 @@
                 } elseif ($edit_id === (int) $_SESSION['user_id']) {
                     $errors[] = "Cannot edit your own account here.";
                 } else {
-                    $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
-                    $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
 
-                    $redirect_url = null;
+                    // Check if any changes were made
+                    if ($username === $target_edit_user['username'] && 
+                        $email === $target_edit_user['email'] && 
+                        $fullname === $target_edit_user['fullname']) {
+                        
+                        $errors[] = "No changes were made to the assessor information.";
+                    } else {
+                        $edit_stmt = $conn->prepare("UPDATE user SET username=?, email=?, fullname=? WHERE user_id=?");
+                        $edit_stmt->bind_param("sssi", $username, $email, $fullname, $edit_id);
 
-                    try {
+                        $redirect_url = null;
 
-                        if ($edit_stmt->execute()) {
+                        try {
 
-                            if (isset($_POST['reset_password'])) {
-                                $password = "password123";
-                                $hash = password_hash($password, PASSWORD_DEFAULT);
-                                $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
-                                $reset_password_stmt->bind_param("si", $hash, $edit_id);
-                                $reset_password_stmt->execute();
+                            if ($edit_stmt->execute()) {
+
+                                if (isset($_POST['reset_password'])) {
+                                    $password = "password123";
+                                    $hash = password_hash($password, PASSWORD_DEFAULT);
+                                    $reset_password_stmt = $conn->prepare("UPDATE user SET password=? WHERE user_id=?");
+                                    $reset_password_stmt->bind_param("si", $hash, $edit_id);
+                                    $reset_password_stmt->execute();
+                                }
+
+                                $redirect_url = "assessors.php?success=edited";
+                            
                             }
 
-                            $redirect_url = "assessors.php?success=edited";
-                        
+                        } catch (mysqli_sql_exception) {
+
+                            if ($conn->errno === 1062) { // 1062 = Duplicate entry
+                                $errors[] = "Error: That Username or Email is already registered.";
+                            } else {
+                                $errors[] = "System error: Something went wrong, please try again later.";
+                            }
+
+                        } finally {
+
+                            if (isset($edit_stmt)) $edit_stmt->close();
+                            if (isset($reset_password_stmt)) {
+                                $reset_password_stmt->close();
+                            }
                         }
 
-                    } catch (mysqli_sql_exception) {
-
-                        if ($conn->errno === 1062) { // 1062 = Duplicate entry
-                            $errors[] = "Error: That Username or Email is already registered.";
-                        } else {
-                            $errors[] = "System error: Something went wrong, please try again later.";
+                        if ($redirect_url) {
+                            header("Location: $redirect_url");
+                            exit;
                         }
-
-                    } finally {
-
-                        if (isset($edit_stmt)) $edit_stmt->close();
-                        if (isset($reset_password_stmt)) {
-                            $reset_password_stmt->close();
-                        }
-                    }
-
-                    if ($redirect_url) {
-                        header("Location: $redirect_url");
-                        exit;
                     }
                 }
                 
@@ -313,6 +322,7 @@
                     </form>
                 </div>
 
+                <!-- Edit Form -->
                 <div class="card collapse-form" style="display:<?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;" id="editForm">
                     <h3 class="mb-20">Edit Assessor</h3>
 
