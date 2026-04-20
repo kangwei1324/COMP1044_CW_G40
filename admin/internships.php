@@ -2,6 +2,7 @@
     $required_role = 'admin';
     include '../config/db.php';
     include '../includes/auth_check.php';
+    include '../includes/functions.php';
 
     $errors = [];
     $success_msg = "";
@@ -307,8 +308,9 @@
                         <div class="form-group">
                             <label>Semester</label>
                             <select name="semester" class="form-control" required>
-                                <?php foreach($semesters as $semester): ?>
-                                    <option value="<?= htmlspecialchars($semester) ?>" <?= ($action === 'add' && ($_POST['semester'] ?? '') === $semester) ? 'selected' : '' ?>><?= htmlspecialchars($semester) ?></option>
+                                <option value="">Select a Semester</option>
+                                <?php foreach($semesters as $sem_option): ?>
+                                    <option value="<?= htmlspecialchars($sem_option) ?>" <?= ($action === 'add' && ($_POST['semester'] ?? '') === $sem_option) ? 'selected' : '' ?>><?= htmlspecialchars($sem_option) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -335,7 +337,7 @@
                     <h3 class="mb-20">Edit Student Internship</h3>
                     <form action="" method="post" class="form-grid">
                         <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="edit_id" value="<?= htmlspecialchars($edit_internship_id) ?>">
+                        <input type="hidden" name="edit_id" value="<?= htmlspecialchars($edit_internship_id ?? '') ?>">
                         
                         <!-- Row 1: Student and Assessor Dropdowns -->
                         <div class="form-group">
@@ -386,7 +388,7 @@
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-secondary btn-auto" onclick="document.getElementById('editForm').style.display='none'">Cancel</button>
+                            <a href="internships.php" class="btn btn-secondary btn-auto">Cancel</a>
                             <button type="submit" class="btn btn-primary btn-auto">Save Assignment</button>
                         </div>
                     </form>

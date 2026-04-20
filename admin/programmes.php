@@ -1,8 +1,8 @@
 <?php
     // 1. Guard and Config
     $required_role = 'admin';
-    include '../includes/auth_check.php';
     include '../config/db.php';
+    include '../includes/auth_check.php';
 
     // 2. Initialize State
     $errors = [];
@@ -69,7 +69,7 @@
                 if ($conn->errno === 1062) {
                     $errors[] = "Error: This programme name already exists.";
                 } else {
-                    $errors[] = "Database error: " . $e->getMessage();
+                    $errors[] = "System error: Something went wrong, please try again later.";
                 }
             } finally {
                 if (isset($stmt)) $stmt->close();
@@ -87,20 +87,32 @@
         $delete_id = (int)$_GET['delete_id'];
         $redirect_url = null;
 
-        try {
-            $stmt = $conn->prepare("DELETE FROM programme WHERE programme_id = ?");
-            $stmt->bind_param("i", $delete_id);
-            if ($stmt->execute()) {
-                $redirect_url = "programmes.php?success=deleted";
+        // Verify the programme exists first
+        $check_stmt = $conn->prepare("SELECT programme_id FROM programme WHERE programme_id = ?");
+        $check_stmt->bind_param("i", $delete_id);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        $target_programme = $check_result->fetch_assoc();
+        $check_stmt->close();
+
+        if (!$target_programme) {
+            $errors[] = "Programme not found.";
+        } else {
+            try {
+                $stmt = $conn->prepare("DELETE FROM programme WHERE programme_id = ?");
+                $stmt->bind_param("i", $delete_id);
+                if ($stmt->execute()) {
+                    $redirect_url = "programmes.php?success=deleted";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($conn->errno === 1451) {
+                    $errors[] = "Cannot delete: Students are currently enrolled in this programme.";
+                } else {
+                    $errors[] = "System error: Something went wrong, please try again later.";
+                }
+            } finally {
+                if (isset($stmt)) $stmt->close();
             }
-        } catch (mysqli_sql_exception $e) {
-            if ($conn->errno === 1451) {
-                $errors[] = "Cannot delete: Students are currently enrolled in this programme.";
-            } else {
-                $errors[] = "Database error occurred.";
-            }
-        } finally {
-            if (isset($stmt)) $stmt->close();
         }
 
         if ($redirect_url) {
