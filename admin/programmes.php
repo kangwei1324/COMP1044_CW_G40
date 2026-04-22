@@ -3,6 +3,7 @@
     $required_role = 'admin';
     include '../config/db.php';
     include '../includes/auth_check.php';
+    include '../includes/functions.php';
 
     // 2. Initialize State
     $errors = [];
@@ -21,12 +22,7 @@
     // 4. Handle Edit Trigger (GET)
     if (isset($_GET['edit_id'])) {
         $edit_id = (int)$_GET['edit_id'];
-        $stmt = $conn->prepare("SELECT * FROM programme WHERE programme_id = ?");
-        $stmt->bind_param("i", $edit_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $programme = $res->fetch_assoc();
-        $stmt->close();
+        $programme = get_programme($conn, $edit_id);
 
         if ($programme) {
             $edit_mode = true;
@@ -38,7 +34,6 @@
 
     // 5. Handle Form Submissions (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
-        $stmt = null; // Clear any previous statement from GET handlers
         $prog_name = trim($_POST['prog_name'] ?? '');
 
         if (empty($prog_name)) {
@@ -52,8 +47,13 @@
                     $success_tag = "added";
                 } elseif ($action === 'edit') {
                     $edit_id = (int)$_POST['edit_id'];
-                    
-                    if (isset($programme) && $prog_name === $programme['programme_name']) {
+
+                    // Fresh DB lookup — do not rely on GET block's $programme variable
+                    $existing_programme = get_programme($conn, $edit_id);
+
+                    if (!$existing_programme) {
+                        $errors[] = "Programme not found.";
+                    } elseif ($prog_name === $existing_programme['programme_name']) {
                         $errors[] = "Error: The programme name is still the same.";
                     } else {
                         $stmt = $conn->prepare("UPDATE programme SET programme_name = ? WHERE programme_id = ?");
@@ -85,19 +85,14 @@
     // 6. Handle Deletions (GET)
     if (isset($_GET['delete_id'])) {
         $delete_id = (int)$_GET['delete_id'];
-        $redirect_url = null;
 
         // Verify the programme exists first
-        $check_stmt = $conn->prepare("SELECT programme_id FROM programme WHERE programme_id = ?");
-        $check_stmt->bind_param("i", $delete_id);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
-        $target_programme = $check_result->fetch_assoc();
-        $check_stmt->close();
+        $target_programme = get_programme($conn, $delete_id);
 
         if (!$target_programme) {
             $errors[] = "Programme not found.";
         } else {
+            $redirect_url = null;
             try {
                 $stmt = $conn->prepare("DELETE FROM programme WHERE programme_id = ?");
                 $stmt->bind_param("i", $delete_id);
@@ -113,11 +108,11 @@
             } finally {
                 if (isset($stmt)) $stmt->close();
             }
-        }
 
-        if ($redirect_url) {
-            header("Location: $redirect_url");
-            exit;
+            if ($redirect_url) {
+                header("Location: $redirect_url");
+                exit;
+            }
         }
     }
 

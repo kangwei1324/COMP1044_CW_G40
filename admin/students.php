@@ -26,12 +26,7 @@
     if (isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
-        $check_stmt = $conn->prepare("SELECT * FROM student WHERE student_id = ?");
-        $check_stmt->bind_param("i", $edit_id);
-        $check_stmt->execute();
-        $res = $check_stmt->get_result();
-        $student = $res->fetch_assoc();
-        $check_stmt->close();
+        $student = get_student($conn, $edit_id);
 
         if ($student) {
             $edit_mode = true;
@@ -90,11 +85,7 @@
                 $edit_id = (int) ($_POST['edit_id'] ?? 0);
 
                 // Re-verify the student still exists before updating
-                $check_stmt = $conn->prepare("SELECT * FROM student WHERE student_id = ?");
-                $check_stmt->bind_param("i", $edit_id);
-                $check_stmt->execute();
-                $existing = $check_stmt->get_result()->fetch_assoc();
-                $check_stmt->close();
+                $existing = get_student($conn, $edit_id);
 
                 if (!$existing) {
                     $errors[] = "Student not found.";
@@ -132,11 +123,7 @@
         $delete_id = (int) $_GET['delete_id'];
 
         // Verify the student exists before attempting delete
-        $check_stmt = $conn->prepare("SELECT student_id FROM student WHERE student_id = ?");
-        $check_stmt->bind_param("i", $delete_id);
-        $check_stmt->execute();
-        $target_student = $check_stmt->get_result()->fetch_assoc();
-        $check_stmt->close();
+        $target_student = get_student($conn, $delete_id);
 
         if (!$target_student) {
             $errors[] = "Student not found.";

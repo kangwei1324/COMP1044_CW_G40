@@ -1,9 +1,11 @@
 <?php
+    // 1. Guard and Config
     $required_role = 'admin';
     include '../config/db.php';
     include '../includes/auth_check.php';
     include '../includes/functions.php';
 
+    // 2. Initialize State
     $errors = [];
     $success_msg = "";
     $action = $_POST['action'] ?? '';
@@ -13,12 +15,14 @@
     $edit_student_id = $edit_lecturer_id = $edit_supervisor_id = $edit_company_name = $edit_semester = $edit_internship_year = "";
 
 
+    // 3. Handle Success Messages from URL (PRG Pattern)
     if (isset($_GET['success'])) {
         if ($_GET['success'] === 'added')   $success_msg = "New internship added successfully!";
         if ($_GET['success'] === 'deleted') $success_msg = "Internship deleted successfully!";
         if ($_GET['success'] === 'edited')  $success_msg = "Internship updated successfully!";
     }
 
+    // 4. Handle Edit Trigger (GET)
     if (isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
@@ -40,7 +44,8 @@
         }
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 5. Handle Form Submissions (POST)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
 
         $student_id = trim($_POST['student_id'] ?? '');
         $lecturer_id = trim($_POST['lecturer_id'] ?? '');
@@ -136,7 +141,7 @@
         }
     }
 
-    // Delete An Internship
+    // 6. Handle Deletions (GET)
     if (isset($_GET['delete_id'])) {
         $delete_id = (int) $_GET['delete_id'];
         $internship = check_internships($conn, $delete_id);
@@ -172,53 +177,7 @@
 
     }
 
-    function check_internships($conn, $internship_id) {
-        $check_stmt = $conn->prepare("SELECT * FROM internships WHERE internship_id = ?");
-        $check_stmt->bind_param("i", $internship_id);
-        $check_stmt->execute();
-
-        $result = $check_stmt->get_result();
-        $internship = $result->fetch_assoc();
-        $check_stmt->close();
-
-        return $internship;
-    }
-
-    // get internship info
-    function get_internships($conn) {
-        $sql = "SELECT internships.internship_id, student.student_id, student.student_name, 
-                         industry_supervisor.fullname AS supervisor_name, lecturer.fullname AS lecturer_name, 
-                         internships.company_name, internships.semester, internships.internship_year,
-                         (SELECT COUNT(*) FROM assessment WHERE assessment.internship_id = internships.internship_id) AS assessment_count
-                  FROM internships
-                  JOIN student ON internships.student_id = student.student_id
-                  LEFT JOIN user AS industry_supervisor ON internships.industry_supervisor_id = industry_supervisor.user_id
-                  LEFT JOIN user AS lecturer ON internships.lecturer_id = lecturer.user_id";
-        
-        $result = $conn->query($sql);
-        return $result;
-    }
-
-    // get specific assessor list
-    function get_lecturers($conn) {
-        $sql = "SELECT * FROM user WHERE role = 'lecturer' ORDER BY fullname ASC";
-        $result = $conn->query($sql);
-        return $result;
-    }
-    function get_supervisors($conn) {
-        $sql = "SELECT * FROM user WHERE role = 'industry_supervisor' ORDER BY fullname ASC";
-        $result = $conn->query($sql);
-        return $result;
-    }
-
-    // get students
-    function get_students($conn) {
-        $sql = "SELECT * FROM student ORDER BY student_name ASC";
-        $result = $conn->query($sql);
-        return $result;
-    }
-
-
+    // 7. Fetch All Records for the Table
     $result = get_internships($conn);
 
     $lecturers = get_lecturers($conn);
@@ -420,48 +379,54 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $result->fetch_assoc()): ?>
-                                    <?php
-                                        $internship_id = htmlspecialchars($row['internship_id']);
-                                        $student_id = htmlspecialchars($row['student_id']);
-                                        $student_name = htmlspecialchars($row['student_name']);
-                                        $lecturer_name = htmlspecialchars($row['lecturer_name']);
-                                        $supervisor_name = htmlspecialchars($row['supervisor_name']);
-                                        $company_name = htmlspecialchars($row['company_name']);
+                                <?php if ($result && $result->num_rows > 0): ?>
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <?php
+                                            $internship_id = htmlspecialchars($row['internship_id']);
+                                            $student_id = htmlspecialchars($row['student_id']);
+                                            $student_name = htmlspecialchars($row['student_name']);
+                                            $lecturer_name = htmlspecialchars($row['lecturer_name']);
+                                            $supervisor_name = htmlspecialchars($row['supervisor_name']);
+                                            $company_name = htmlspecialchars($row['company_name']);
 
-                                        $semester = htmlspecialchars($row['semester']);
-                                        $internship_year = htmlspecialchars($row['internship_year']);
-                                        $period = $semester . ' / ' . $internship_year;
+                                            $semester = htmlspecialchars($row['semester']);
+                                            $internship_year = htmlspecialchars($row['internship_year']);
+                                            $period = $semester . ' / ' . $internship_year;
 
-                                        $assessment_count = $row['assessment_count'];
-                                        $status = null;
-                                        $badge_color = null;
-                                        if ($assessment_count == '2') {
-                                            $badge_color = 'badge-success';
-                                            $status = 'Completed';
-                                        } elseif ($assessment_count == '1') {
-                                            $badge_color = 'badge-warning';
-                                            $status = 'Incomplete 1/2';
-                                        } else {
-                                            $badge_color = 'badge-warning';
-                                            $status = 'Incomplete 0/2';
-                                        }
-                                    ?>
+                                            $assessment_count = $row['assessment_count'];
+                                            $status = null;
+                                            $badge_color = null;
+                                            if ($assessment_count == '2') {
+                                                $badge_color = 'badge-success';
+                                                $status = 'Completed';
+                                            } elseif ($assessment_count == '1') {
+                                                $badge_color = 'badge-warning';
+                                                $status = 'Incomplete 1/2';
+                                            } else {
+                                                $badge_color = 'badge-warning';
+                                                $status = 'Incomplete 0/2';
+                                            }
+                                        ?>
+                                        <tr class="table-body-row">
+                                            <td class="table-cell-medium"><?= $student_id ?> <br><span class="subtitle"><?= $student_name ?></span></td>
+                                            <td class="table-cell"><?= $lecturer_name ?></td>
+                                            <td class="table-cell"><?= $supervisor_name ?></td>
+                                            <td class="table-cell-muted"><?= $company_name ?></td>
+                                            <td class="table-cell font-14"><?= $period ?></td>
+                                            <td class="table-cell">
+                                                <span class="badge <?= $badge_color ?>"><?= $status ?></span>
+                                            </td>
+                                            <td class="table-actions-cell">
+                                                <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
+                                                <a href="?delete_id=<?= $internship_id ?>" class="action-revoke" onclick="return confirm('Do you want to delete this internship? This cannot be undone.')">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
                                     <tr class="table-body-row">
-                                        <td class="table-cell-medium"><?= $student_id ?> <br><span class="subtitle"><?= $student_name ?></span></td>
-                                        <td class="table-cell"><?= $lecturer_name ?></td>
-                                        <td class="table-cell"><?= $supervisor_name ?></td>
-                                        <td class="table-cell-muted"><?= $company_name ?></td>
-                                        <td class="table-cell font-14"><?= $period ?></td>
-                                        <td class="table-cell">
-                                            <span class="badge <?= $badge_color ?>"><?= $status ?></span>
-                                        </td>
-                                        <td class="table-actions-cell">
-                                            <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
-                                            <a href="?delete_id=<?= $internship_id ?>" class="action-revoke" onclick="return confirm('Do you want to delete this internship? This cannot be undone.')">Delete</a>
-                                        </td>
+                                        <td colspan="7" class="table-cell text-center">No internship assignments found.</td>
                                     </tr>
-                                <?php endwhile; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
