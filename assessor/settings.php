@@ -14,12 +14,12 @@
 <body>
     <div class="app-container">
         <!-- sidebar -->
-        <?php include '../components/sidebar_assessor.php' ?>
+        <?php include '../components/sidebar.php' ?>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- header -->
-            <?php include '../components/header_assessor.php'; ?>
+            <?php include '../components/header.php'; ?>
 
             <div class="content-area">
                 <div class="page-header">

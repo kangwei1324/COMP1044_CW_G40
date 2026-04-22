@@ -26,6 +26,7 @@
 
             // Store user info in the session
             $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['role'] = $user['role'];
 
             // Redirect to page based on role

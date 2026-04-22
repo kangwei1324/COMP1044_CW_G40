@@ -198,12 +198,12 @@
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <?php include '../components/sidebar_admin.php'; ?>
+        <?php include '../components/sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- header -->
-             <?php include '../components/header_admin.php'; ?>
+             <?php include '../components/header.php'; ?>
 
             <div class="content-area">
                 <div class="page-header">
