@@ -1,11 +1,11 @@
 <?php
-    // check if user is an admin
+    // 1. Guard and Config
     $required_role = 'admin';
     include '../config/db.php';
     include '../includes/auth_check.php';
     include '../includes/functions.php';
 
-    // Initialize variables
+    // 2. Initialize State
     $errors = [];
     // Only allow user to create assessor roles
     // This also prevents users from using inspect element and adding their own invalid role when adding new assessors.
@@ -17,7 +17,7 @@
     $edit_username = $edit_fullname = $edit_email = "";
     $action = $_POST['action'] ?? '';
 
-    // 2. Check for success flags in the URL (Post/Redirect/Get pattern)
+    // 3. Handle Success Messages from URL (PRG Pattern)
     if (isset($_GET['success'])) {
 
         if ($_GET['success'] === 'added') {
@@ -30,7 +30,7 @@
         
     }
 
-    // User enters editing mode for an assessor
+    // 4. Handle Edit Trigger (GET)
     if(isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
@@ -57,8 +57,8 @@
 
 
 
-    // User submits a form
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 5. Handle Form Submissions (POST)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
 
         // 1. Clean Common Inputs
         $username = trim($_POST['username'] ?? '');
@@ -194,7 +194,7 @@
         }
     }
 
-    // DELETE ASSESSOR (Revoke Access)
+    // 6. Handle Deletions (GET)
     if (isset($_GET['delete_id'])) {
         $delete_id = (int) $_GET['delete_id']; // Cast to int — kills any injection attempt
 
@@ -243,7 +243,7 @@
         }
     }
 
-    // DISPLAY ASSESSORS
+    // 7. Fetch All Records for the Table
     // We run this AFTER the Insert/Delete so the table reflects the latest state
     $sql = "SELECT user_id, username, fullname FROM user WHERE role='industry_supervisor' OR role='lecturer' ORDER BY user_id DESC";
     $result = $conn->query($sql);
@@ -367,17 +367,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $result->fetch_assoc()): ?>
+                                <?php if ($result && $result->num_rows > 0): ?>
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <tr class="table-body-row">
+                                            <td class="table-cell-muted">U<?= sprintf("%03d", $row['user_id']) ?></td>
+                                            <td class="table-cell-medium"><?= htmlspecialchars($row['username']) ?></td>
+                                            <td class="table-cell"><?= htmlspecialchars($row['fullname']) ?></td>
+                                            <td class="table-actions-cell">
+                                                <a href="?edit_id=<?= $row['user_id'] ?>" class="action-edit">Edit</a>
+                                                <a href="?delete_id=<?= $row['user_id'] ?>" class="action-revoke" onclick="return confirm('Revoke access for this assessor? This cannot be undone.')">Revoke Access</a>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
                                     <tr class="table-body-row">
-                                        <td class="table-cell-muted">U<?= sprintf("%03d", $row['user_id']) ?></td>
-                                        <td class="table-cell-medium"><?= htmlspecialchars($row['username']) ?></td>
-                                        <td class="table-cell"><?= htmlspecialchars($row['fullname']) ?></td>
-                                        <td class="table-actions-cell">
-                                            <a href="?edit_id=<?= $row['user_id'] ?>" class="action-edit">Edit</a>
-                                            <a href="?delete_id=<?= $row['user_id'] ?>" class="action-revoke" onclick="return confirm('Revoke access for this assessor? This cannot be undone.')">Revoke Access</a>
-                                        </td>
+                                        <td colspan="4" class="table-cell text-center">No assessor accounts found.</td>
                                     </tr>
-                                <?php endwhile; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
