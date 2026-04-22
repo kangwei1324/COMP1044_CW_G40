@@ -1,6 +1,26 @@
 <?php
     $required_role = 'admin';
+    include '../config/db.php';
     include '../includes/auth_check.php';
+    include '../includes/functions.php';
+
+    function get_count($conn, $sql) {
+        $result = $conn->query($sql);
+        if ($result) {
+            $row = $result->fetch_row();
+            return $row[0];
+        }
+        return 0;
+    }
+
+    $student_stmt = "SELECT COUNT(*) FROM student";
+    $assessor_stmt = "SELECT COUNT(*) FROM user WHERE role IN ('lecturer', 'industry_supervisor')";
+    $pending_evals_stmt = "SELECT COUNT(*) FROM internships i WHERE (SELECT COUNT(*) FROM assessment a WHERE i.internship_id = a.internship_id) < 2";
+    $student_count = get_count($conn, $student_stmt);
+    $assessor_count = get_count($conn, $assessor_stmt);
+    $pending_evals_count = get_count($conn, $pending_evals_stmt);
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -34,15 +54,15 @@
                         <!-- Mock Stat Cards -->
                         <div class="stat-card stat-card-primary">
                             <h3 class="stat-label">Total Students</h3>
-                            <p class="stat-value">124</p>
+                            <p class="stat-value"><?= htmlspecialchars($student_count) ?></p>
                         </div>
                         <div class="stat-card stat-card-success">
                             <h3 class="stat-label">Assessors</h3>
-                            <p class="stat-value">18</p>
+                            <p class="stat-value"><?= htmlspecialchars($assessor_count) ?></p>
                         </div>
                         <div class="stat-card stat-card-warning">
-                            <h3 class="stat-label">Pending Evaluations</h3>
-                            <p class="stat-value">45</p>
+                            <h3 class="stat-label">Internships Pending Evaluations</h3>
+                            <p class="stat-value"><?= htmlspecialchars($pending_evals_count) ?></p>
                         </div>
                     </div>
                 </div>
