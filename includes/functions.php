@@ -37,8 +37,55 @@
     }
 
     function get_students($conn) {
-        $result = $conn->query("SELECT * FROM student ORDER BY student_name ASC");
+        $result = $conn->query("SELECT s.*, p.programme_name 
+                                FROM student s 
+                                JOIN programme p ON s.programme_id = p.programme_id 
+                                ORDER BY s.student_name ASC");
         return $result;
+    }
+
+    function get_students_paged($conn, $limit, $offset, $search = "") {
+        $sql = "SELECT s.*, p.programme_name 
+                FROM student s 
+                JOIN programme p ON s.programme_id = p.programme_id";
+        
+        if (!empty($search)) {
+            $sql .= " WHERE s.student_name LIKE ? OR s.student_id LIKE ?";
+        }
+        
+        $sql .= " ORDER BY s.student_name ASC LIMIT ? OFFSET ?";
+        
+        $stmt = $conn->prepare($sql);
+        
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("ii", $limit, $offset);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result;
+    }
+
+    function count_students($conn, $search = "") {
+        $sql = "SELECT COUNT(*) as total FROM student";
+        if (!empty($search)) {
+            $sql .= " WHERE student_name LIKE ? OR student_id LIKE ?";
+        }
+        
+        $stmt = $conn->prepare($sql);
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ss", $searchTerm, $searchTerm);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        return $result['total'];
     }
 
 
@@ -72,17 +119,164 @@
     }
 
     function get_internships($conn) {
-        $sql = "SELECT internships.internship_id, student.student_id, student.student_name,
-                         industry_supervisor.fullname AS supervisor_name, lecturer.fullname AS lecturer_name,
-                         internships.company_name, internships.semester, internships.internship_year,
-                         (SELECT COUNT(*) FROM assessment WHERE assessment.internship_id = internships.internship_id) AS assessment_count
-                  FROM internships
-                  JOIN student ON internships.student_id = student.student_id
-                  LEFT JOIN user AS industry_supervisor ON internships.industry_supervisor_id = industry_supervisor.user_id
-                  LEFT JOIN user AS lecturer ON internships.lecturer_id = lecturer.user_id";
+        return get_internships_paged($conn, 9999, 0); // Legacy support
+    }
 
-        $result = $conn->query($sql);
+    function get_internships_paged($conn, $limit, $offset, $search = "", $filters = []) {
+        $sql = "SELECT i.internship_id, s.student_id, s.student_name,
+                       u_is.fullname AS supervisor_name, u_l.fullname AS lecturer_name,
+                       i.company_name, i.semester, i.internship_year,
+                       (SELECT COUNT(*) FROM assessment a WHERE a.internship_id = i.internship_id) AS assessment_count
+                FROM internships i
+                JOIN student s ON i.student_id = s.student_id
+                LEFT JOIN user u_is ON i.industry_supervisor_id = u_is.user_id
+                LEFT JOIN user u_l ON i.lecturer_id = u_l.user_id";
+
+        $where = [];
+        $params = [];
+        $types = "";
+
+        if (!empty($search)) {
+            $where[] = "(s.student_name LIKE ? OR s.student_id LIKE ? OR i.company_name LIKE ?)";
+            $searchTerm = "%$search%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $types .= "sss";
+        }
+
+        if (!empty($filters['lecturer_id'])) {
+            $where[] = "i.lecturer_id = ?";
+            $params[] = $filters['lecturer_id'];
+            $types .= "i";
+        }
+        if (!empty($filters['supervisor_id'])) {
+            $where[] = "i.industry_supervisor_id = ?";
+            $params[] = $filters['supervisor_id'];
+            $types .= "i";
+        }
+        if (!empty($filters['semester'])) {
+            $where[] = "i.semester = ?";
+            $params[] = $filters['semester'];
+            $types .= "s";
+        }
+        if (!empty($filters['year'])) {
+            $where[] = "i.internship_year = ?";
+            $params[] = $filters['year'];
+            $types .= "i";
+        }
+
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql .= " ORDER BY i.internship_id DESC LIMIT ? OFFSET ?";
+        $params[] = $limit;
+        $params[] = $offset;
+        $types .= "ii";
+
+        $stmt = $conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
         return $result;
+    }
+
+    function count_internships($conn, $search = "", $filters = []) {
+        $sql = "SELECT COUNT(*) as total 
+                FROM internships i
+                JOIN student s ON i.student_id = s.student_id";
+
+        $where = [];
+        $params = [];
+        $types = "";
+
+        if (!empty($search)) {
+            $where[] = "(s.student_name LIKE ? OR s.student_id LIKE ? OR i.company_name LIKE ?)";
+            $searchTerm = "%$search%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $types .= "sss";
+        }
+
+        if (!empty($filters['lecturer_id'])) {
+            $where[] = "i.lecturer_id = ?";
+            $params[] = $filters['lecturer_id'];
+            $types .= "i";
+        }
+        if (!empty($filters['supervisor_id'])) {
+            $where[] = "i.industry_supervisor_id = ?";
+            $params[] = $filters['supervisor_id'];
+            $types .= "i";
+        }
+        if (!empty($filters['semester'])) {
+            $where[] = "i.semester = ?";
+            $params[] = $filters['semester'];
+            $types .= "s";
+        }
+        if (!empty($filters['year'])) {
+            $where[] = "i.internship_year = ?";
+            $params[] = $filters['year'];
+            $types .= "i";
+        }
+
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $stmt = $conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        return $result['total'];
+    }
+
+    function get_assessors_paged($conn, $limit, $offset, $search = "") {
+        $sql = "SELECT user_id, username, fullname, role, email FROM user WHERE (role='industry_supervisor' OR role='lecturer')";
+        
+        if (!empty($search)) {
+            $sql .= " AND (fullname LIKE ? OR username LIKE ? OR email LIKE ?)";
+        }
+        
+        $sql .= " ORDER BY user_id DESC LIMIT ? OFFSET ?";
+        
+        $stmt = $conn->prepare($sql);
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("sssii", $searchTerm, $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("ii", $limit, $offset);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result;
+    }
+
+    function count_assessors($conn, $search = "") {
+        $sql = "SELECT COUNT(*) as total FROM user WHERE (role='industry_supervisor' OR role='lecturer')";
+        if (!empty($search)) {
+            $sql .= " AND (fullname LIKE ? OR username LIKE ? OR email LIKE ?)";
+        }
+        
+        $stmt = $conn->prepare($sql);
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("sss", $searchTerm, $searchTerm, $searchTerm);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        return $result['total'];
     }
 
     function get_lecturers($conn) {
@@ -121,6 +315,10 @@
     // ---- Assessor Dashboard Functions ----
 
     function get_student_assessor($conn, $user_id) {
+        return get_student_assessor_paged($conn, $user_id, 9999, 0); // Legacy support
+    }
+
+    function get_student_assessor_paged($conn, $user_id, $limit, $offset) {
         $sql = "SELECT s.student_id, s.student_name, i.internship_id, i.lecturer_id, i.industry_supervisor_id,
         i.company_name, i.semester, i.internship_year, p.programme_name,
         IF(a.assessment_id IS NULL, 'Pending', 'Completed') AS status
@@ -128,21 +326,38 @@
         JOIN student s ON i.student_id = s.student_id
         JOIN programme p ON s.programme_id = p.programme_id
         LEFT JOIN assessment a ON a.internship_id = i.internship_id AND a.assessor_id = ?
-        WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)";
+        WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)
+        ORDER BY i.internship_id DESC LIMIT ? OFFSET ?";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+        $stmt->bind_param("iiiii", $user_id, $user_id, $user_id, $limit, $offset);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             $stmt->close();
             return $result;
-
         } else {
             $stmt->close();
             return false;
         }
+    }
 
+    function count_student_assessor($conn, $user_id) {
+        $sql = "SELECT COUNT(*) as total 
+                FROM internships i
+                WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $user_id, $user_id);
+        
+        if ($stmt->execute()) {
+            $result = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+            return $result['total'];
+        } else {
+            $stmt->close();
+            return 0;
+        }
     }
     
     

@@ -30,6 +30,17 @@
         
     }
 
+    // 4. Pagination & Search State
+    $search = trim($_GET['search'] ?? '');
+    $limit  = 10;
+    $page   = (int) ($_GET['page'] ?? 1);
+    if ($page < 1) $page = 1;
+    $offset = ($page - 1) * $limit;
+
+    $total_assessors = count_assessors($conn, $search);
+    $total_pages     = ceil($total_assessors / $limit);
+    if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
     // 4. Handle Edit Trigger (GET)
     if(isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
@@ -243,10 +254,8 @@
         }
     }
 
-    // 7. Fetch All Records for the Table
-    // We run this AFTER the Insert/Delete so the table reflects the latest state
-    $sql = "SELECT user_id, username, fullname FROM user WHERE role='industry_supervisor' OR role='lecturer' ORDER BY user_id DESC";
-    $result = $conn->query($sql);
+    // 7. Fetch Paged Records for the Table
+    $result = get_assessors_paged($conn, $limit, $offset, $search);
 ?>
 
 <!DOCTYPE html>
@@ -356,6 +365,16 @@
 
                 <!-- Data Table -->
                 <div class="card">
+                    <form action="" method="get" class="search-container">
+                        <input type="text" name="search" class="form-control max-w-400" 
+                               placeholder="Search by Name, Username or Email..." 
+                               value="<?= htmlspecialchars($search) ?>">
+                        <button type="submit" class="btn btn-primary btn-auto">Search</button>
+                        <?php if (!empty($search)): ?>
+                            <a href="assessors.php" class="btn btn-secondary btn-auto">Clear</a>
+                        <?php endif; ?>
+                    </form>
+
                     <div class="table-responsive">
                         <table class="irms-table">
                             <thead>
@@ -387,6 +406,42 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    <?php if ($total_pages > 1): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing <?= $offset + 1 ?> to <?= min($offset + $limit, $total_assessors) ?> of <?= $total_assessors ?> assessors
+                            </div>
+                            
+                            <!-- Prev -->
+                            <a href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                               class="pagination-item <?= ($page <= 1) ? 'disabled' : '' ?>"
+                               <?= ($page <= 1) ? 'onclick="return false;"' : '' ?>>
+                                &laquo; Prev
+                            </a>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                                   class="pagination-item <?= ($i === $page) ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <!-- Next -->
+                            <a href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                               class="pagination-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>"
+                               <?= ($page >= $total_pages) ? 'onclick="return false;"' : '' ?>>
+                                Next &raquo;
+                            </a>
+                        </div>
+                    <?php elseif ($total_assessors > 0): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing all <?= $total_assessors ?> assessors
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>

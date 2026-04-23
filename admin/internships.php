@@ -22,6 +22,24 @@
         if ($_GET['success'] === 'edited')  $success_msg = "Internship updated successfully!";
     }
 
+    // 4. Pagination & Search/Filter State
+    $search = trim($_GET['search'] ?? '');
+    $filters = [
+        'lecturer_id'   => $_GET['lecturer_id'] ?? '',
+        'supervisor_id' => $_GET['supervisor_id'] ?? '',
+        'semester'      => $_GET['semester'] ?? '',
+        'year'          => $_GET['year'] ?? ''
+    ];
+    
+    $limit  = 10;
+    $page   = (int) ($_GET['page'] ?? 1);
+    if ($page < 1) $page = 1;
+    $offset = ($page - 1) * $limit;
+
+    $total_internships = count_internships($conn, $search, $filters);
+    $total_pages       = ceil($total_internships / $limit);
+    if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
     // 4. Handle Edit Trigger (GET)
     if (isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
@@ -207,14 +225,20 @@
 
     }
 
-    // 7. Fetch All Records for the Table
-    $result = get_internships($conn);
+    // 7. Fetch Paged Records for the Table
+    $result = get_internships_paged($conn, $limit, $offset, $search, $filters);
 
-    $lecturers = get_lecturers($conn);
-    $supervisors = get_supervisors($conn);
-    $students = get_students($conn);
+    $lecturers_list = get_lecturers($conn);
+    $supervisors_list = get_supervisors($conn);
+    $students_list = get_students($conn);
+
+    // Collect into arrays for reuse
+    $lecturers = []; while($row = $lecturers_list->fetch_assoc()) $lecturers[] = $row;
+    $supervisors = []; while($row = $supervisors_list->fetch_assoc()) $supervisors[] = $row;
+    $students = []; while($row = $students_list->fetch_assoc()) $students[] = $row;
 
     $semesters = ['Autumn', 'Spring', 'Summer'];
+    $years = $conn->query("SELECT DISTINCT internship_year FROM internships ORDER BY internship_year DESC");
 ?>
 
 <!DOCTYPE html>
@@ -263,18 +287,18 @@
                             <label>Student</label>
                             <select name="student_id" class="form-control" required>
                                 <option value="">Please Select a Student</option>
-                                <?php while ($row = $students->fetch_assoc()): ?>
+                                <?php foreach ($students as $row): ?>
                                     <option value="<?= htmlspecialchars($row['student_id']) ?>" <?= ($action === 'add' && ($_POST['student_id'] ?? '') == $row['student_id']) ? 'selected' : '' ?>><?= htmlspecialchars($row['student_name']) ?> - <?= htmlspecialchars($row['student_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Lecturer</label>
                             <select name="lecturer_id" class="form-control" required>
                                 <option value="">Please Select a Lecturer</option>
-                                <?php while ($row = $lecturers->fetch_assoc()): ?>
+                                <?php foreach ($lecturers as $row): ?>
                                     <option value="<?= htmlspecialchars($row['user_id']) ?>" <?= ($action === 'add' && ($_POST['lecturer_id'] ?? '') == $row['user_id']) ? 'selected' : '' ?>><?= htmlspecialchars($row['fullname']) ?> - <?= htmlspecialchars($row['user_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -283,9 +307,9 @@
                             <label>Industry Supervisor</label>
                             <select name="supervisor_id" class="form-control" required>
                                 <option value="">Please Select an Industry Supervisor</option>
-                                <?php while ($row = $supervisors->fetch_assoc()): ?>
+                                <?php foreach ($supervisors as $row): ?>
                                     <option value="<?= htmlspecialchars($row['user_id']) ?>" <?= ($action === 'add' && ($_POST['supervisor_id'] ?? '') == $row['user_id']) ? 'selected' : '' ?>><?= htmlspecialchars($row['fullname']) ?> - <?= htmlspecialchars($row['user_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -317,10 +341,7 @@
 
                 <!-- Edit Form -->
                 <?php
-                    // Reset results so we can loop through them again for the Edit form
-                    if ($students) $students->data_seek(0);
-                    if ($lecturers) $lecturers->data_seek(0);
-                    if ($supervisors) $supervisors->data_seek(0);
+                    // Results are in arrays, so we can loop through them multiple times
                 ?>
                 <div class="card collapse-form" id="editForm" style="display: <?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;">
                     <h3 class="mb-20">Edit Student Internship</h3>
@@ -333,18 +354,18 @@
                             <label>Student</label>
                             <select name="student_id" class="form-control" required>
                                 <option value="">Please Select a Student</option>
-                                <?php while ($row = $students->fetch_assoc()): ?>
+                                <?php foreach ($students as $row): ?>
                                     <option value="<?= htmlspecialchars($row['student_id']) ?>" <?= ($row['student_id'] == $edit_student_id) ? 'selected' : '' ?>><?= htmlspecialchars($row['student_name']) ?> - <?= htmlspecialchars($row['student_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Lecturer</label>
                             <select name="lecturer_id" class="form-control" required>
                                 <option value="">Please Select a Lecturer</option>
-                                <?php while ($row = $lecturers->fetch_assoc()): ?>
+                                <?php foreach ($lecturers as $row): ?>
                                     <option value="<?= htmlspecialchars($row['user_id']) ?>" <?= ($row['user_id'] == $edit_lecturer_id) ? 'selected' : '' ?>><?= htmlspecialchars($row['fullname']) ?> - <?= htmlspecialchars($row['user_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -353,9 +374,9 @@
                             <label>Industry Supervisor</label>
                             <select name="supervisor_id" class="form-control" required>
                                 <option value="">Please Select an Industry Supervisor</option>
-                                <?php while ($row = $supervisors->fetch_assoc()): ?>
+                                <?php foreach ($supervisors as $row): ?>
                                     <option value="<?= htmlspecialchars($row['user_id']) ?>" <?= ($row['user_id'] == $edit_supervisor_id) ? 'selected' : '' ?>><?= htmlspecialchars($row['fullname']) ?> - <?= htmlspecialchars($row['user_id']) ?></option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -404,15 +425,41 @@
 
                 <!-- Data Table -->
                 <div class="card">
-                    <div class="search-container justify-between">
-                        <input type="text" class="form-control max-w-400" placeholder="Search Assignments by Student or Company...">
+                    <form action="" method="get" class="search-container">
+                        <input type="text" name="search" class="form-control max-w-400" 
+                               placeholder="Search by Student, Company or ID..." 
+                               value="<?= htmlspecialchars($search) ?>">
                         
-                        <select class="form-control btn-auto">
-                            <!-- Filter dropdown simulation -->
-                            <option value="">Filter by Assessor: All</option>
-                            <option value="2">Dr. Alan Smith</option>
+                        <select name="lecturer_id" class="form-control btn-auto">
+                            <option value="">Filter by Lecturer: All</option>
+                            <?php foreach ($lecturers as $row): if ($row['role'] === 'lecturer'): ?>
+                                <option value="<?= $row['user_id'] ?>" <?= $filters['lecturer_id'] == $row['user_id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($row['fullname']) ?>
+                                </option>
+                            <?php endif; endforeach; ?>
                         </select>
-                    </div>
+
+                        <select name="semester" class="form-control btn-auto">
+                            <option value="">Semester: All</option>
+                            <?php foreach ($semesters as $sem): ?>
+                                <option value="<?= $sem ?>" <?= $filters['semester'] === $sem ? 'selected' : '' ?>><?= $sem ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <select name="year" class="form-control btn-auto">
+                            <option value="">Year: All</option>
+                            <?php while($y = $years->fetch_assoc()): ?>
+                                <option value="<?= $y['internship_year'] ?>" <?= $filters['year'] == $y['internship_year'] ? 'selected' : '' ?>>
+                                    <?= $y['internship_year'] ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary btn-auto">Filter</button>
+                        <?php if (!empty($search) || !empty(array_filter($filters))): ?>
+                            <a href="internships.php" class="btn btn-secondary btn-auto">Reset</a>
+                        <?php endif; ?>
+                    </form>
 
                     <div class="table-responsive">
                         <table class="irms-table">
@@ -482,6 +529,45 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    <?php if ($total_pages > 1): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing <?= $offset + 1 ?> to <?= min($offset + $limit, $total_internships) ?> of <?= $total_internships ?> assignments
+                            </div>
+                            
+                            <!-- Prev -->
+                            <?php 
+                                $query_params = http_build_query(array_merge(['search' => $search], $filters));
+                            ?>
+                            <a href="?page=<?= $page - 1 ?>&<?= $query_params ?>" 
+                               class="pagination-item <?= ($page <= 1) ? 'disabled' : '' ?>"
+                               <?= ($page <= 1) ? 'onclick="return false;"' : '' ?>>
+                                &laquo; Prev
+                            </a>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?= $i ?>&<?= $query_params ?>" 
+                                   class="pagination-item <?= ($i === $page) ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <!-- Next -->
+                            <a href="?page=<?= $page + 1 ?>&<?= $query_params ?>" 
+                               class="pagination-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>"
+                               <?= ($page >= $total_pages) ? 'onclick="return false;"' : '' ?>>
+                                Next &raquo;
+                            </a>
+                        </div>
+                    <?php elseif ($total_internships > 0): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing all <?= $total_internships ?> assignments
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>

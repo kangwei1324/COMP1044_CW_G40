@@ -10,7 +10,18 @@
     include '../includes/functions.php';
 
     $user_id = $_SESSION['user_id'];
-    $result = get_student_assessor($conn, $user_id);
+    
+    // Pagination State
+    $limit  = 10;
+    $page   = (int) ($_GET['page'] ?? 1);
+    if ($page < 1) $page = 1;
+    $offset = ($page - 1) * $limit;
+
+    $total_students = count_student_assessor($conn, $user_id);
+    $total_pages    = ceil($total_students / $limit);
+    if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
+    $result = get_student_assessor_paged($conn, $user_id, $limit, $offset);
 ?>
 
 <!DOCTYPE html>
@@ -104,6 +115,42 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    <?php if ($total_pages > 1): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing <?= $offset + 1 ?> to <?= min($offset + $limit, $total_students) ?> of <?= $total_students ?> assigned students
+                            </div>
+                            
+                            <!-- Prev -->
+                            <a href="?page=<?= $page - 1 ?>" 
+                               class="pagination-item <?= ($page <= 1) ? 'disabled' : '' ?>"
+                               <?= ($page <= 1) ? 'onclick="return false;"' : '' ?>>
+                                &laquo; Prev
+                            </a>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?= $i ?>" 
+                                   class="pagination-item <?= ($i === $page) ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <!-- Next -->
+                            <a href="?page=<?= $page + 1 ?>" 
+                               class="pagination-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>"
+                               <?= ($page >= $total_pages) ? 'onclick="return false;"' : '' ?>>
+                                Next &raquo;
+                            </a>
+                        </div>
+                    <?php elseif ($total_students > 0): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing all <?= $total_students ?> assigned students
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>
