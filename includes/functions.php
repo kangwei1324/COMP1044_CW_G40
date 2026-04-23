@@ -216,4 +216,29 @@
 
     }
 
+    function get_all_student_results($conn, $internship_id) {
+        $sql = "SELECT a.*, u.role as assessor_role, u.fullname as assessor_name,
+                i.company_name, p.programme_name, i.semester, i.internship_year, s.student_name, s.student_id
+                FROM assessment a
+                JOIN user u ON a.assessor_id = u.user_id
+                JOIN internships i ON a.internship_id = i.internship_id
+                JOIN student s ON i.student_id = s.student_id
+                JOIN programme p ON s.programme_id = p.programme_id
+                WHERE a.internship_id = ?
+                ORDER BY u.role DESC"; // Order by role to group them consistently
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $internship_id);
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+            return $result;
+
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
 ?>

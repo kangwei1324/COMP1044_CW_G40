@@ -455,6 +455,9 @@
                                             </td>
                                             <td class="table-actions-cell">
                                                 <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
+                                                <?php if ($assessment_count > 0): ?>
+                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>" class="action-edit" style="color: #0f172a;">View Results</a>
+                                                <?php endif; ?>
                                                 <a href="?delete_id=<?= $internship_id ?>" class="action-revoke" onclick="return confirm('Do you want to delete this internship? This cannot be undone.')">Delete</a>
                                             </td>
                                         </tr>
