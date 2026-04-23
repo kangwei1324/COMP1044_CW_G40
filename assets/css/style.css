@@ -394,13 +394,18 @@ body {
   text-decoration: none;
   font-size: 14px;
   margin-bottom: 8px;
+  margin-left: 10px;
   display: inline-block;
   transition: var(--transition);
+
+  background: #ffffff;
+  border: 1px solid var(--border-color);
 }
 
 .back-link:hover {
   color: var(--primary-color);
   transform: translateX(-4px);
+  background: #f1f5f9;
 }
 
 /* Evaluation Form Components */
@@ -409,7 +414,11 @@ body {
   grid-template-columns: 2fr 1fr;
   gap: 24px;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 40px;
+}
+
+.comment-row {
+  grid-column: span 2;
 }
 
 .score-row-last {
@@ -459,12 +468,39 @@ body {
 .irms-result-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  
 }
 
-.irms-result-table td {
+.irms-result-table tr {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid #f1f5f9;
+}
+
+.irms-result-table .comment-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  background-color: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.irms-result-table .comment-label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.irms-result-table .comment-text {
+    text-align: right;
+    color: #1e293b;
 }
 
 .irms-result-table .total-row td {

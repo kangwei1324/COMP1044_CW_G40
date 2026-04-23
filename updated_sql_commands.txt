@@ -70,6 +70,17 @@ CREATE TABLE assessment (
 
     overall_comments            TEXT NOT NULL,
 
+    total_marks INT GENERATED ALWAYS AS (
+        task_projects + 
+        health_safety + 
+        theoretical_knowledge + 
+        report_presentation + 
+        clarity_of_language + 
+        lifelong_learning + 
+        project_management + 
+        time_management
+    ) VIRTUAL,
+
     last_updated                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (internship_id) REFERENCES internships(internship_id) ON DELETE RESTRICT,
