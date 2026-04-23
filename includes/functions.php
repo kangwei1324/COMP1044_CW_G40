@@ -103,6 +103,45 @@
         return $programme ?: false;
     }
 
+    function get_programmes_paged($conn, $limit, $offset, $search = "") {
+        $sql = "SELECT * FROM programme";
+        if (!empty($search)) {
+            $sql .= " WHERE programme_name LIKE ?";
+        }
+        $sql .= " ORDER BY programme_name ASC LIMIT ? OFFSET ?";
+        
+        $stmt = $conn->prepare($sql);
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("sii", $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("ii", $limit, $offset);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result;
+    }
+
+    function count_programmes($conn, $search = "") {
+        $sql = "SELECT COUNT(*) as total FROM programme";
+        if (!empty($search)) {
+            $sql .= " WHERE programme_name LIKE ?";
+        }
+        
+        $stmt = $conn->prepare($sql);
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("s", $searchTerm);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        return $result['total'];
+    }
+
 
     // ---- Internship Functions ----
 
