@@ -377,10 +377,20 @@
                         </div>
 
                         <?php if (isset($needs_confirmation) && $needs_confirmation): ?>
-                            <div class="alert alert-warning mb-20">
-                                <strong>Warning:</strong> The previous assessor has already graded this internship. Reassigning them will delete their grades.
-                                <div style="margin-top: 10px;">
-                                    <label><input type="checkbox" name="confirm_reassign" value="1" required> I understand, delete the old grades and reassign.</label>
+                            <div class="form-span-2">
+                                <div class="alert alert-warning mb-20" style="padding: 20px;">
+                                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                        <span style="font-size: 20px;">⚠️</span>
+                                        <div>
+                                            <strong style="display: block; margin-bottom: 4px; font-size: 15px;">Data Loss Warning</strong>
+                                            <p style="margin-bottom: 12px; opacity: 0.9;">The previous assessor(s) have already submitted marks for this internship. Reassigning them will <strong>permanently delete</strong> all existing marks and comments.</p>
+                                            
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; background: rgba(255,255,255,0.5); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.05);">
+                                                <input type="checkbox" name="confirm_reassign" value="1" required style="width: 18px; height: 18px; cursor: pointer;">
+                                                <span style="font-weight: 600; font-size: 14px;">I understand, delete grades and proceed with reassignment.</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -456,10 +466,10 @@
                                                 <span class="badge <?= $badge_color ?>"><?= $status ?></span>
                                             </td>
                                             <td class="table-actions-cell">
-                                                <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
                                                 <?php if ($assessment_count > 0): ?>
                                                     <a href="view_result.php?internship_id=<?= $internship_id ?>" class="action-edit" style="color: #0f172a;">View Results</a>
                                                 <?php endif; ?>
+                                                <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
                                                 <a href="?delete_id=<?= $internship_id ?>" class="action-revoke" onclick="return confirm('Do you want to delete this internship? This cannot be undone.')">Delete</a>
                                             </td>
                                         </tr>
