@@ -415,6 +415,7 @@ body {
   text-decoration: none; 
   font-size: 14px; 
   font-weight: 500; 
+  white-space: nowrap;
 }
 
 .action-revoke { 
@@ -422,6 +423,7 @@ body {
   text-decoration: none; 
   font-size: 14px; 
   font-weight: 500; 
+  white-space: nowrap;
 }
 
 .text-right { text-align: right; }
