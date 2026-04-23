@@ -57,11 +57,11 @@
                             <?= !empty($student_info) ? "Combined Evaluation Result: " . htmlspecialchars($student_info['student_name']) . " (" . htmlspecialchars($student_info['student_id']) . ")" : "Evaluation Results" ?>
                         </h1>
                     </div>
-                    <div>
+                    <div class="header-actions">
                         <?php if (!empty($evaluations)): ?>
-                        <button class="btn btn-secondary btn-auto btn-sm back-link" onclick="window.print()">🖨️ Print Report</button>
+                        <button class="btn btn-secondary btn-auto btn-sm" onclick="window.print()">🖨️ Print Report</button>
                         <?php endif; ?>
-                        <button onclick="window.location.href='internships.php'" class="btn btn-secondary btn-auto btn-sm back-link">&larr; Back to Internships</button>
+                        <button onclick="window.location.href='internships.php'" class="btn btn-secondary btn-auto btn-sm">&larr; Back to Internships</button>
                     </div>
                 </div>
 

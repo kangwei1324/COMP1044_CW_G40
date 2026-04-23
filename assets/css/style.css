@@ -14,6 +14,10 @@
   --input-focus: 0 0 0 3px rgba(37, 99, 235, 0.2);
   --border-radius: 8px;
   --transition: all 0.2s ease-in-out;
+  
+  /* Sidebar Dimensions */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 80px;
 }
 
 * {
@@ -181,11 +185,20 @@ body {
 }
 
 .sidebar {
-  width: 260px;
+  width: var(--sidebar-width);
   background-color: var(--nav-bg);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
 }
 
 .sidebar-brand {
@@ -194,6 +207,37 @@ body {
   font-weight: 700;
   color: var(--primary-color);
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .sidebar-brand {
+  padding: 24px 0;
+  justify-content: center;
+}
+
+.sidebar.collapsed .brand-text {
+  display: none;
+}
+
+.sidebar-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: #f1f5f9;
+  color: var(--primary-color);
 }
 
 .sidebar-menu {
@@ -211,6 +255,25 @@ body {
   text-decoration: none;
   font-weight: 500;
   transition: var(--transition);
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .sidebar-menu li a {
+  padding: 12px 0;
+  justify-content: center;
+}
+
+.sidebar.collapsed .link-text {
+  display: none;
+}
+
+.sidebar-menu li a .icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-menu li a:hover, .sidebar-menu li a.active {
@@ -260,6 +323,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .page-title {
