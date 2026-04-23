@@ -82,30 +82,58 @@
                         
                         $errors[] = "No changes were made to the internship assignment.";
                     } else {
-                        $sql = "UPDATE internships SET student_id = ?, lecturer_id = ?, industry_supervisor_id = ?, company_name = ?, semester = ?, internship_year = ? WHERE internship_id = ?";
-                        $stmt = $conn->prepare($sql);
-                        $stmt->bind_param("iiissii", $student_id, $lecturer_id, $supervisor_id, $company_name, $semester, $internship_year, $edit_id);
+                        // Option 4 Logic: Check if an assessor changed and the old one has marks
+                        $needs_confirmation = false;
+                        $old_assessor_to_clear = null;
+                        $confirm_reassign = isset($_POST['confirm_reassign']) && $_POST['confirm_reassign'] == '1';
 
-                        $redirect_url = null;
-                        try {
-                            if ($stmt->execute()) {
-                                $redirect_url = "internships.php?success=edited";
+                        if ($lecturer_id != $internship['lecturer_id']) {
+                            if (check_assessor_has_marks($conn, $edit_id, $internship['lecturer_id'])) {
+                                $needs_confirmation = true;
+                                $old_assessor_to_clear = $internship['lecturer_id'];
                             }
-                        } catch (mysqli_sql_exception) {
-                            if ($conn->errno === 1062) {// 1062 = Duplicate entry
-                                $errors[] = "Error: This student is already assigned to an internship for $semester $internship_year. Please check the existing records.";
-                            } elseif ($conn->errno === 1452) {
-                                $errors[] = "Error: One of the selected options does not exist in our records.";
-                            } else {
-                                $errors[] = "System Error: Something went wrong, please try again later.";
+                        }
+                        if (!$needs_confirmation && $supervisor_id != $internship['industry_supervisor_id']) {
+                            if (check_assessor_has_marks($conn, $edit_id, $internship['industry_supervisor_id'])) {
+                                $needs_confirmation = true;
+                                $old_assessor_to_clear = $internship['industry_supervisor_id'];
                             }
-                        } finally {
-                            if (isset($stmt)) $stmt->close();
                         }
 
-                        if ($redirect_url) {
-                            header("Location: $redirect_url");
-                            exit;
+                        if ($needs_confirmation && !$confirm_reassign) {
+                            $errors[] = "We need your confirmation: The previous assessor already submitted marks. Reassigning will permanently delete them. Check the confirmation box to proceed.";
+                        } else {
+                            // If confirmed, clear the old marks first
+                            if ($needs_confirmation && $confirm_reassign && $old_assessor_to_clear) {
+                                delete_assessor_marks($conn, $edit_id, $old_assessor_to_clear);
+                            }
+
+                            // Proceed with UPDATE
+                            $sql = "UPDATE internships SET student_id = ?, lecturer_id = ?, industry_supervisor_id = ?, company_name = ?, semester = ?, internship_year = ? WHERE internship_id = ?";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("iiissii", $student_id, $lecturer_id, $supervisor_id, $company_name, $semester, $internship_year, $edit_id);
+
+                            $redirect_url = null;
+                            try {
+                                if ($stmt->execute()) {
+                                    $redirect_url = "internships.php?success=edited";
+                                }
+                            } catch (mysqli_sql_exception) {
+                                if ($conn->errno === 1062) {// 1062 = Duplicate entry
+                                    $errors[] = "Error: This student is already assigned to an internship for $semester $internship_year. Please check the existing records.";
+                                } elseif ($conn->errno === 1452) {
+                                    $errors[] = "Error: One of the selected options does not exist in our records.";
+                                } else {
+                                    $errors[] = "System Error: Something went wrong, please try again later.";
+                                }
+                            } finally {
+                                if (isset($stmt)) $stmt->close();
+                            }
+
+                            if ($redirect_url) {
+                                header("Location: $redirect_url");
+                                exit;
+                            }
                         }
                     }
                 }
@@ -346,9 +374,18 @@
                             <input type="number" name="internship_year" id="internship_year" class="form-control" value="<?= htmlspecialchars($edit_internship_year) ?>" placeholder="e.g. 2026" required>
                         </div>
 
+                        <?php if (isset($needs_confirmation) && $needs_confirmation): ?>
+                            <div class="alert alert-warning mb-20">
+                                <strong>Warning:</strong> The previous assessor has already graded this internship. Reassigning them will delete their grades.
+                                <div style="margin-top: 10px;">
+                                    <label><input type="checkbox" name="confirm_reassign" value="1" required> I understand, delete the old grades and reassign.</label>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="form-actions">
                             <a href="internships.php" class="btn btn-secondary btn-auto">Cancel</a>
-                            <button type="submit" class="btn btn-primary btn-auto">Save Assignment</button>
+                            <button type="submit" class="btn <?= (isset($needs_confirmation) && $needs_confirmation) ? 'btn-danger' : 'btn-primary' ?> btn-auto"><?= (isset($needs_confirmation) && $needs_confirmation) ? 'Confirm & Overwrite' : 'Save Assignment' ?></button>
                         </div>
                     </form>
                 </div>

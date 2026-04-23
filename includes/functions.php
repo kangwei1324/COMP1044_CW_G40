@@ -95,6 +95,28 @@
         return $result;
     }
 
+    function check_assessor_has_marks($conn, $internship_id, $assessor_id) {
+        $sql = "SELECT assessment_id FROM assessment WHERE internship_id = ? AND assessor_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $internship_id, $assessor_id);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+            return $result->num_rows > 0;
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
+    function delete_assessor_marks($conn, $internship_id, $assessor_id) {
+        $stmt = $conn->prepare("DELETE FROM assessment WHERE internship_id = ? AND assessor_id = ?");
+        $stmt->bind_param("ii", $internship_id, $assessor_id);
+        $success = $stmt->execute();
+        $stmt->close();
+        return $success;
+    }
+
 
     // ---- Assessor Dashboard Functions ----
 
