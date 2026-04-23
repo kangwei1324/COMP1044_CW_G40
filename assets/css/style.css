@@ -276,6 +276,14 @@ body {
   justify-content: center;
 }
 
+.sidebar-menu li a .icon img,
+.sidebar-toggle-btn .icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  transition: var(--transition);
+}
+
 .sidebar-menu li a:hover, .sidebar-menu li a.active {
   background-color: #f1f5f9;
   color: var(--primary-color);
