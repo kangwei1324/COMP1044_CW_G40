@@ -9,14 +9,14 @@
     <div class="sidebar-brand">
         <span class="brand-text">IRMS Portal</span>
         <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
-            <span class="icon">☰</span>
+            <span class="icon"><img src="../assets/images/menu-lines.svg" alt="Toggle"></span>
         </button>
     </div>
     <ul class="sidebar-menu">
         
         <li>
             <a href="dashboard.php" class="<?= is_active("dashboard.php") ?>">
-                <span class="icon">📊</span>
+                <span class="icon"><img src="../assets/images/dashboard.svg" alt="Dashboard"></span>
                 <span class="link-text">Dashboard</span>
             </a>
         </li>
@@ -24,25 +24,25 @@
         <?php if($_SESSION['role'] === 'admin'): ?>
         <li>
             <a href="programmes.php" class="<?= is_active("programmes.php") ?>">
-                <span class="icon">📜</span>
+                <span class="icon"><img src="../assets/images/programmes.svg" alt="Programmes"></span>
                 <span class="link-text">Programmes</span>
             </a>
         </li>
         <li>
             <a href="students.php" class="<?= is_active("students.php") ?>">
-                <span class="icon">👨‍🎓</span>
+                <span class="icon"><img src="../assets/images/student.svg" alt="Students"></span>
                 <span class="link-text">Students</span>
             </a>
         </li>
         <li>
             <a href="assessors.php" class="<?= is_active("assessors.php") ?>">
-                <span class="icon">👨‍🏫</span>
+                <span class="icon"><img src="../assets/images/assessor.svg" alt="Assessors"></span>
                 <span class="link-text">Assessors</span>
             </a>
         </li>
         <li>
             <a href="internships.php" class="<?= is_active("internships.php") ?>">
-                <span class="icon">💼</span>
+                <span class="icon"><img src="../assets/images/internships.svg" alt="Internships"></span>
                 <span class="link-text">Internships</span>
             </a>
         </li>
@@ -50,7 +50,7 @@
 
         <li>
             <a href="settings.php" class="<?= is_active("settings.php") ?>">
-                <span class="icon">⚙️</span>
+                <span class="icon"><img src="../assets/images/settings.svg" alt="Settings"></span>
                 <span class="link-text">Settings</span>
             </a>
         </li>
