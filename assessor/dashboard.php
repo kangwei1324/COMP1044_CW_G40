@@ -36,6 +36,10 @@
                     <h1 class="page-title">Assigned Students</h1>
                 </div>
 
+                <?php if (isset($_GET['success']) && $_GET['success'] === 'evaluated'): ?>
+                    <div class="alert alert-success">Evaluation submitted successfully!</div>
+                <?php endif; ?>
+
                 <div class="card">
                     <h2>Your Evaluations</h2>
                     <p class="card-description">Select a student from your assigned list to begin the evaluation process.</p>

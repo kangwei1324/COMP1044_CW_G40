@@ -22,9 +22,11 @@
 
     $user_id = $_SESSION['user_id'];
     $result = get_student_result($conn, $user_id, $internship_id);
+    $has_result = false;
 
     if ($result && $result->num_rows > 0) {
         if ($row = $result->fetch_assoc()) {
+            $has_result = true;
             $programme_name = htmlspecialchars($row['programme_name']);
             $company_name = htmlspecialchars($row['company_name']);
             $semester = htmlspecialchars($row['semester']);
@@ -80,20 +82,19 @@
             <?php include '../components/header.php'; ?>
 
             <div class="content-area">
-                <?php
-                    // Check if all credentials are in the URL
-                    
-                ?>
                 <div class="page-header">
                     <div>
                         <h1 class="page-title"><?= "Evaluation Result: " . $student_name . " (" . $student_id . ")" ?></h1>
                     </div>
                     <div>
+                        <?php if ($has_result): ?>
                         <button class="btn btn-secondary btn-auto btn-sm back-link" onclick="window.print()">🖨️ Print Report</button>
+                        <?php endif; ?>
                         <button onclick="window.history.back()" class="btn btn-secondary btn-auto btn-sm back-link">&larr; Back</button>
                     </div>
                 </div>
 
+                <?php if ($has_result): ?>
                 <div class="card">
                     <div class="result-header-grid">
                         <div>
@@ -186,6 +187,13 @@
                         <p><?= $comments ?></p>
                     </div>
                 </div>
+                <?php else: ?>
+                    <div class="card">
+                        <div class="text-center" style="padding: 40px;">
+                            <p class="text-muted">No evaluation record found for this student.</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>
