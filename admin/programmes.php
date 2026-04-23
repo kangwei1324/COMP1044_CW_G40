@@ -19,6 +19,17 @@
         if ($_GET['success'] === 'edited')  $success_msg = "Programme updated successfully!";
     }
 
+    // 4. Pagination & Search State
+    $search = trim($_GET['search'] ?? '');
+    $limit  = 10;
+    $page   = (int) ($_GET['page'] ?? 1);
+    if ($page < 1) $page = 1;
+    $offset = ($page - 1) * $limit;
+
+    $total_programmes = count_programmes($conn, $search);
+    $total_pages      = ceil($total_programmes / $limit);
+    if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
     // 4. Handle Edit Trigger (GET)
     if (isset($_GET['edit_id'])) {
         $edit_id = (int)$_GET['edit_id'];
@@ -116,8 +127,8 @@
         }
     }
 
-    // 7. Fetch all records for the table
-    $result = $conn->query("SELECT * FROM programme ORDER BY programme_name ASC");
+    // 7. Fetch paged records for the table
+    $result = get_programmes_paged($conn, $limit, $offset, $search);
 ?>
 
 <!DOCTYPE html>
@@ -185,6 +196,15 @@
 
                 <!-- Data Table -->
                 <div class="card">
+                    <form action="" method="get" class="search-container">
+                        <input type="text" name="search" class="form-control max-w-400" 
+                               placeholder="Search by Programme Name..." 
+                               value="<?= htmlspecialchars($search) ?>">
+                        <button type="submit" class="btn btn-primary btn-auto">Search</button>
+                        <?php if (!empty($search)): ?>
+                            <a href="programmes.php" class="btn btn-secondary btn-auto">Clear</a>
+                        <?php endif; ?>
+                    </form>
                     <div class="table-responsive">
                         <table class="irms-table">
                             <thead>
@@ -214,6 +234,42 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    <?php if ($total_pages > 1): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing <?= $offset + 1 ?> to <?= min($offset + $limit, $total_programmes) ?> of <?= $total_programmes ?> programmes
+                            </div>
+                            
+                            <!-- Prev -->
+                            <a href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                               class="pagination-item <?= ($page <= 1) ? 'disabled' : '' ?>"
+                               <?= ($page <= 1) ? 'onclick="return false;"' : '' ?>>
+                                &laquo; Prev
+                            </a>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                                   class="pagination-item <?= ($i === $page) ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <!-- Next -->
+                            <a href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                               class="pagination-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>"
+                               <?= ($page >= $total_pages) ? 'onclick="return false;"' : '' ?>>
+                                Next &raquo;
+                            </a>
+                        </div>
+                    <?php elseif ($total_programmes > 0): ?>
+                        <div class="pagination">
+                            <div class="pagination-info">
+                                Showing all <?= $total_programmes ?> programmes
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>
