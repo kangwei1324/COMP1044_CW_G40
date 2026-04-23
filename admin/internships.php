@@ -84,28 +84,30 @@
                     } else {
                         // Option 4 Logic: Check if an assessor changed and the old one has marks
                         $needs_confirmation = false;
-                        $old_assessor_to_clear = null;
+                        $old_assessors_to_clear = [];
                         $confirm_reassign = isset($_POST['confirm_reassign']) && $_POST['confirm_reassign'] == '1';
 
                         if ($lecturer_id != $internship['lecturer_id']) {
                             if (check_assessor_has_marks($conn, $edit_id, $internship['lecturer_id'])) {
                                 $needs_confirmation = true;
-                                $old_assessor_to_clear = $internship['lecturer_id'];
+                                $old_assessors_to_clear[] = $internship['lecturer_id'];
                             }
                         }
-                        if (!$needs_confirmation && $supervisor_id != $internship['industry_supervisor_id']) {
+                        if ($supervisor_id != $internship['industry_supervisor_id']) {
                             if (check_assessor_has_marks($conn, $edit_id, $internship['industry_supervisor_id'])) {
                                 $needs_confirmation = true;
-                                $old_assessor_to_clear = $internship['industry_supervisor_id'];
+                                $old_assessors_to_clear[] = $internship['industry_supervisor_id'];
                             }
                         }
 
                         if ($needs_confirmation && !$confirm_reassign) {
-                            $errors[] = "We need your confirmation: The previous assessor already submitted marks. Reassigning will permanently delete them. Check the confirmation box to proceed.";
+                            $errors[] = "We need your confirmation: The previous assessor(s) already submitted marks. Reassigning will permanently delete them. Check the confirmation box to proceed.";
                         } else {
                             // If confirmed, clear the old marks first
-                            if ($needs_confirmation && $confirm_reassign && $old_assessor_to_clear) {
-                                delete_assessor_marks($conn, $edit_id, $old_assessor_to_clear);
+                            if ($needs_confirmation && $confirm_reassign && !empty($old_assessors_to_clear)) {
+                                foreach ($old_assessors_to_clear as $assessor_to_clear) {
+                                    delete_assessor_marks($conn, $edit_id, $assessor_to_clear);
+                                }
                             }
 
                             // Proceed with UPDATE
