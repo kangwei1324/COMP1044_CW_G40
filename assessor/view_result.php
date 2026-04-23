@@ -1,6 +1,64 @@
 <?php
+    // Error display for debugging
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL);
+
     $required_role = 'assessor';
     include '../includes/auth_check.php';
+    include '../config/db.php';
+    include '../includes/functions.php';
+
+    if (isset($_GET['internship_id']) && isset($_GET['student_id']) && isset($_GET['student_name'])) {
+        $internship_id = htmlspecialchars($_GET['internship_id']);
+        $student_id = htmlspecialchars($_GET['student_id']);
+        $student_name = htmlspecialchars($_GET['student_name']);
+
+    } else {
+        // If credentials not found, kick user back to dashboard
+        header("Location: dashboard.php");
+        exit;
+    }
+
+    $user_id = $_SESSION['user_id'];
+    $result = get_student_result($conn, $user_id, $internship_id);
+
+    if ($result && $result->num_rows > 0) {
+        if ($row = $result->fetch_assoc()) {
+            $programme_name = htmlspecialchars($row['programme_name']);
+            $company_name = htmlspecialchars($row['company_name']);
+            $semester = htmlspecialchars($row['semester']);
+            $internship_year = htmlspecialchars($row['internship_year']);
+
+            $task_projects = htmlspecialchars($row['task_projects']);
+            $task_projects_comment = htmlspecialchars($row['task_projects_comment']);
+
+            $health_safety = htmlspecialchars($row['health_safety']);
+            $health_safety_comment = htmlspecialchars($row['health_safety_comment']);
+
+            $theoretical_knowledge = htmlspecialchars($row['theoretical_knowledge']);
+            $theoretical_knowledge_comment = htmlspecialchars($row['theoretical_knowledge_comment']);
+
+            $report_presentation = htmlspecialchars($row['report_presentation']);
+            $report_presentation_comment = htmlspecialchars($row['report_presentation_comment']);
+
+            $clarity_of_language = htmlspecialchars($row['clarity_of_language']);
+            $clarity_of_language_comment = htmlspecialchars($row['clarity_of_language_comment']);
+
+            $lifelong_learning = htmlspecialchars($row['lifelong_learning']);
+            $lifelong_learning_comment = htmlspecialchars($row['lifelong_learning_comment']);
+
+            $project_management = htmlspecialchars($row['project_management']);
+            $project_management_comment = htmlspecialchars($row['project_management_comment']);
+
+            $time_management = htmlspecialchars($row['time_management']);
+            $time_management_comment = htmlspecialchars($row['time_management_comment']);
+
+            $comments = htmlspecialchars($row['overall_comments']);
+
+            $total_marks = htmlspecialchars($row['total_marks']);
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -22,23 +80,29 @@
             <?php include '../components/header.php'; ?>
 
             <div class="content-area">
+                <?php
+                    // Check if all credentials are in the URL
+                    
+                ?>
                 <div class="page-header">
                     <div>
-                        <button onclick="window.history.back()" class="back-link btn-link-reset">&larr; Back</button>
-                        <h1 class="page-title">Evaluation Result: Jane Smith (STU1002)</h1>
+                        <h1 class="page-title"><?= "Evaluation Result: " . $student_name . " (" . $student_id . ")" ?></h1>
                     </div>
-                    <button class="btn btn-secondary btn-auto btn-sm" onclick="window.print()">🖨️ Print Report</button>
+                    <div>
+                        <button class="btn btn-secondary btn-auto btn-sm back-link" onclick="window.print()">🖨️ Print Report</button>
+                        <button onclick="window.history.back()" class="btn btn-secondary btn-auto btn-sm back-link">&larr; Back</button>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="result-header-grid">
                         <div>
                             <p class="subtitle">Programme</p>
-                            <p class="font-medium">Bachelor of Information Technology</p>
+                            <p class="font-medium"><?= $programme_name ?></p>
                         </div>
                         <div>
                             <p class="subtitle">Company & Period</p>
-                            <p class="font-medium">Cloud Solutions Ltd (Sem 2, 2024)</p>
+                            <p class="font-medium"><?= $company_name . " (" . $semester . ", " . $internship_year . ")" ?></p>
                         </div>
                     </div>
 
@@ -48,46 +112,78 @@
                         <tbody>
                             <tr>
                                 <td>1. Undertaking Tasks/Projects (10%)</td>
-                                <td class="text-right font-semibold">8.5</td>
+                                <td class="text-right font-semibold"><?= $task_projects ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $task_projects_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>2. Health and Safety (10%)</td>
-                                <td class="text-right font-semibold">9.0</td>
+                                <td class="text-right font-semibold"><?= $health_safety ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $health_safety_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>3. Connectivity and Theoretical Knowledge (10%)</td>
-                                <td class="text-right font-semibold">8.0</td>
+                                <td class="text-right font-semibold"><?= $theoretical_knowledge ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $theoretical_knowledge_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>4. Presentation of Report (15%)</td>
-                                <td class="text-right font-semibold">13.0</td>
+                                <td class="text-right font-semibold"><?= $report_presentation ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $report_presentation_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>5. Clarity of Language (10%)</td>
-                                <td class="text-right font-semibold">9.0</td>
+                                <td class="text-right font-semibold"><?= $clarity_of_language ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $clarity_of_language_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>6. Lifelong Learning Activities (15%)</td>
-                                <td class="text-right font-semibold">12.5</td>
+                                <td class="text-right font-semibold"><?= $lifelong_learning ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $lifelong_learning_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>7. Project Management (15%)</td>
-                                <td class="text-right font-semibold">13.5</td>
+                                <td class="text-right font-semibold"><?= $project_management ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $project_management_comment ?></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>8. Time Management (15%)</td>
-                                <td class="text-right font-semibold">14.0</td>
+                                <td class="text-right font-semibold"><?= $time_management ?></td>
+                                <td class="comment-row">
+                                    <span class="comment-label">Comments:</span>
+                                    <span class="comment-text"><?= $time_management_comment ?></span>
+                                </td>
                             </tr>
                             <tr class="total-row">
                                 <td>Total Score</td>
-                                <td class="text-right">87.5%</td>
+                                <td class="text-right"><?= $total_marks ?></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div class="feedback-box">
                         <h4>General Comments</h4>
-                        <p>Jane demonstrated exceptional technical skills during her internship at Cloud Solutions Ltd. Her ability to execute project management strategies while keeping code logic clean was highly impressive. Excellent time management.</p>
+                        <p><?= $comments ?></p>
                     </div>
                 </div>
             </div>

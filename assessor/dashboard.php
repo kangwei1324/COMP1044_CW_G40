@@ -61,12 +61,13 @@
                                         <?php
                                             $status = htmlspecialchars($row['status']);
                                             $student_id = htmlspecialchars($row['student_id']);
+                                            $student_name = htmlspecialchars($row['student_name']);
                                             $internship_id = htmlspecialchars($row['internship_id']);
                                         ?>
 
                                         <tr class="table-body-row">
                                             <td class="table-cell"><?= $student_id ?></td>
-                                            <td class="table-cell"><?= htmlspecialchars($row['student_name']) ?></td>
+                                            <td class="table-cell"><?= $student_name ?></td>
                                             <td class="table-cell"><?= htmlspecialchars($row['programme_name']) ?></td>
                                             <td class="table-cell"><?= htmlspecialchars($row['company_name']) ?></td>
                                             <td class="table-cell"><?= htmlspecialchars($row['semester']) . " / " . htmlspecialchars($row['internship_year']) ?></td>
@@ -81,9 +82,9 @@
 
                                             <td class="table-cell">
                                                 <?php if ($status === 'Pending'): ?>
-                                                    <a href="evaluate.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
+                                                    <a href="evaluate.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>&student_name=<?= $student_name ?>" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
                                                 <?php else: ?>
-                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>" class="action-edit font-semibold font-14">View Result</a>
+                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>&student_name=<?= $student_name ?>" class="action-edit font-semibold font-14">View Result</a>
                                                 <?php endif; ?>
                                             </td>
 

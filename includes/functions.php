@@ -110,12 +110,88 @@
 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iii", $user_id, $user_id, $user_id);
-        $stmt->execute();
 
-        $result = $stmt->get_result();
-        $stmt->close();
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+            return $result;
 
-        return $result; // Returns mysqli_result or false
+        } else {
+            $stmt->close();
+            return false;
+        }
+
+    }
+    
+    
+    function submit_evaluation($conn, $user_id, $internship_id,
+        $score_tasks, $comment_tasks, $score_health, $comment_health,
+        $score_knowledge, $comment_knowledge, $score_report, $comment_report,
+        $score_language, $comment_language, $score_lifelong, $comment_lifelong,
+        $score_project, $comment_project, $score_time, $comment_time, $comments) {
+
+        $sql = "INSERT INTO assessment (
+            internship_id, assessor_id, task_projects, task_projects_comment,
+            health_safety, health_safety_comment, theoretical_knowledge, theoretical_knowledge_comment,
+            report_presentation, report_presentation_comment, clarity_of_language, clarity_of_language_comment,
+            lifelong_learning, lifelong_learning_comment, project_management, project_management_comment,
+            time_management, time_management_comment, overall_comments
+            
+        ) VALUES (
+            ?, ?, ?, ?,
+            ?, ?, ?, ?,
+            ?, ?, ?, ?,
+            ?, ?, ?, ?,
+            ?, ?, ?
+
+        )";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiisisisisisisisiss",
+            $internship_id, $user_id, $score_tasks, $comment_tasks,
+            $score_health, $comment_health, $score_knowledge, $comment_knowledge,
+            $score_report, $comment_report, $score_language, $comment_language,
+            $score_lifelong, $comment_lifelong, $score_project, $comment_project,
+            $score_time, $comment_time, $comments
+        );
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+
+        } else {
+            $stmt->close();
+            return false;
+        }
+
+    }
+
+
+    function get_student_result($conn, $user_id, $internship_id) {
+        $sql = "SELECT i.company_name, p.programme_name, i.semester, i.internship_year, a.task_projects, a.task_projects_comment,
+        a.health_safety, a.health_safety_comment, a.theoretical_knowledge, a.theoretical_knowledge_comment,
+        a.report_presentation, a.report_presentation_comment, a.clarity_of_language, a.clarity_of_language_comment,
+        a.lifelong_learning, a.lifelong_learning_comment, a.project_management, a.project_management_comment,
+        a.time_management, a.time_management_comment, a.overall_comments, a.total_marks
+        FROM assessment a
+        JOIN internships i ON a.internship_id = i.internship_id
+        JOIN student s ON i.student_id = s.student_id
+        JOIN programme p ON s.programme_id = p.programme_id
+        WHERE (a.internship_id = ? AND a.assessor_id = ?)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $internship_id, $user_id);
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+            return $result;
+
+        } else {
+            $stmt->close();
+            return false;
+        }
+
     }
 
 ?>
