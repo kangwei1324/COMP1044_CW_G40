@@ -35,11 +35,12 @@
     $limit  = 10;
     $page   = (int) ($_GET['page'] ?? 1);
     if ($page < 1) $page = 1;
-    $offset = ($page - 1) * $limit;
 
     $total_assessors = count_assessors($conn, $search);
     $total_pages     = ceil($total_assessors / $limit);
     if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
+    $offset = ($page - 1) * $limit;
 
     // 4. Handle Edit Trigger (GET)
     if(isset($_GET['edit_id'])) {

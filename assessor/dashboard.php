@@ -15,11 +15,11 @@
     $limit  = 10;
     $page   = (int) ($_GET['page'] ?? 1);
     if ($page < 1) $page = 1;
-    $offset = ($page - 1) * $limit;
-
     $total_students = count_student_assessor($conn, $user_id);
     $total_pages    = ceil($total_students / $limit);
     if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+
+    $offset = ($page - 1) * $limit;
 
     $result = get_student_assessor_paged($conn, $user_id, $limit, $offset);
 ?>
