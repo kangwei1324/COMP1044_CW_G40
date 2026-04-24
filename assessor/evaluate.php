@@ -190,30 +190,57 @@
             </div>
         </main>
     </div>
-
+    <>
+    <script src="../assets/js/validation.js"></script>
     <script>
-    console.log("LOG: Script has started!");
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('evaluationForm');
+        //Target both textareas and inputs now
+        const allFields = document.querySelectorAll('textarea, input[type="number"]');
+        const PREFIX = "IRMS_EVAL_";
 
-    document.addEventListener('input', function (event) {
-        // Check if the user is typing in a textarea
-        if (event.target.tagName.toLowerCase() === 'textarea') {
-            const key = 'FINAL_TEST_' + event.target.name;
-            const val = event.target.value;
-            localStorage.setItem(key, val);
-            console.log("LOG: Saved " + key);
+        // 1. Saves contents of page despite page refresh
+        allFields.forEach(field => {
+            const savedValue = localStorage.getItem(PREFIX + field.name);
+            if (savedValue !== null) {
+                field.value = savedValue;
+            }
+
+            // 2.Watch for any changes
+            field.addEventListener('input', () => {
+                localStorage.setItem(PREFIX + field.name, field.value);
+            });
+        });
+
+        // 3. cleaning up and validation
+        if (form) {
+            form.onsubmit = function(event) {
+                let isValid = true;
+                const scoreInputs = document.querySelectorAll('input[type="number"]');
+            
+                scoreInputs.forEach(input => {
+                    const maxVal = parseInt(input.getAttribute('max')) || 10;
+                    const val = parseInt(input.value);
+                    if (isNaN(val) || val > maxVal || val < 0) {
+                        alert(`Error: Mark must be between 0 and ${maxVal}.`);
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                    return false;
+                }
+
+                // SUCCESS: Wipe the memory so the next evaluation starts fresh
+                allFields.forEach(field => {
+                    localStorage.removeItem(PREFIX + field.name);
+                });
+
+                return true;
+            };
         }
     });
-
-    window.addEventListener('load', function() {
-        const textareas = document.querySelectorAll('textarea');
-        textareas.forEach(el => {
-            const saved = localStorage.getItem('FINAL_TEST_' + el.name);
-            if (saved) {
-                el.value = saved;
-                console.log("LOG: Restored " + el.name);
-            }
-        });
-    });
-</script>
+    </script>
 </body>
 </html>
