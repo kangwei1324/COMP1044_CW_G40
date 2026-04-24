@@ -24,6 +24,9 @@
         // Verify password
         if ($user && password_verify($password, $user['password'])) {
 
+            // Regenerate session ID to prevent session fixation attacks
+            session_regenerate_id(true);
+
             // Store user info in the session
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['fullname'] = $user['fullname'];
