@@ -22,6 +22,8 @@
 
         if (empty($current_password) || empty($new_password) || empty($confirm_new_password)) {
             $errors[] = "All fields are required.";
+        } elseif (strlen($new_password) < 8) {
+            $errors[] = "New password must be at least 8 characters long.";
         } else {
             $user = get_user($conn, $_SESSION['user_id']);
 
@@ -69,7 +71,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Assessor Settings - IRMS</title>
+    <title>Admin Settings - IRMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
