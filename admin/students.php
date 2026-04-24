@@ -34,7 +34,7 @@
 
     $offset = ($page - 1) * $limit;
 
-    // 4. Handle Edit Trigger (GET)
+    // 5. Handle Edit Trigger (GET)
     if (isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
@@ -50,7 +50,7 @@
         }
     }
 
-    // 5. Handle Form Submissions (POST)
+    // 6. Handle Form Submissions (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
 
         // Clean & collect inputs
@@ -130,7 +130,7 @@
         }
     }
 
-    // 6. Handle Deletions (GET)
+    // 7. Handle Deletions (GET)
     if (isset($_GET['delete_id'])) {
         $delete_id = (int) $_GET['delete_id'];
 
@@ -167,7 +167,7 @@
         }
     }
 
-    // 7. Fetch paged records and the programme dropdown
+    // 8. Fetch paged records and the programme dropdown
     $result = get_students_paged($conn, $limit, $offset, $search);
     $programmes = $conn->query("SELECT * FROM programme ORDER BY programme_name ASC");
 ?>

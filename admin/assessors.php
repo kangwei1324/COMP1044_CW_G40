@@ -42,7 +42,7 @@
 
     $offset = ($page - 1) * $limit;
 
-    // 4. Handle Edit Trigger (GET)
+    // 5. Handle Edit Trigger (GET)
     if(isset($_GET['edit_id'])) {
         $edit_id = (int) $_GET['edit_id'];
 
@@ -69,7 +69,7 @@
 
 
 
-    // 5. Handle Form Submissions (POST)
+    // 6. Handle Form Submissions (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($action)) {
 
         // 1. Clean Common Inputs
@@ -206,7 +206,7 @@
         }
     }
 
-    // 6. Handle Deletions (GET)
+    // 7. Handle Deletions (GET)
     if (isset($_GET['delete_id'])) {
         $delete_id = (int) $_GET['delete_id']; // Cast to int — kills any injection attempt
 
@@ -255,7 +255,7 @@
         }
     }
 
-    // 7. Fetch Paged Records for the Table
+    // 8. Fetch Paged Records for the Table
     $result = get_assessors_paged($conn, $limit, $offset, $search);
 ?>
 
