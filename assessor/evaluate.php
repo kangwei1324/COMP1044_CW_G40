@@ -103,12 +103,9 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- sidebar -->
         <?php include '../components/sidebar.php' ?>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- header -->
             <?php include '../components/header.php'; ?>
 
             <div class="content-area">
@@ -119,7 +116,6 @@
                     <a href="dashboard.php" class="btn btn-secondary btn-auto btn-sm back-link">&larr; Back to Dashboard</a>
                 </div>
 
-                <!-- Display Errors -->
                 <?php if (!empty($errors)): ?>
                     <?php foreach($errors as $error): ?>
                         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -176,13 +172,11 @@
                             <textarea class="form-control comment-row" name="comment_time" rows="2" placeholder="Provide qualitative comments to justify the scores..."><?= htmlspecialchars($_POST['comment_time'] ?? '') ?></textarea>
                         </div>
 
-                        <!-- Auto Calculated Total -->
                         <div class="total-score-row">
                             <label class="total-score-label">Total Calculated Score (100%)</label>
                             <input type="text" id="total_score" class="form-control total-score-input" readonly value="0%">
                         </div>
 
-                        <!-- Qualitative Feedback -->
                         <div class="form-group">
                             <label>General Comments & Feedback</label>
                             <textarea class="form-control" name="comments" rows="5" placeholder="Provide qualitative comments to justify the scores..."><?= htmlspecialchars($_POST['comments'] ?? '') ?></textarea>
@@ -197,7 +191,29 @@
         </main>
     </div>
 
-    <!-- Client-side Validation Logic -->
-    <script src="../assets/js/validation.js"></script>
+    <script>
+    console.log("LOG: Script has started!");
+
+    document.addEventListener('input', function (event) {
+        // Check if the user is typing in a textarea
+        if (event.target.tagName.toLowerCase() === 'textarea') {
+            const key = 'FINAL_TEST_' + event.target.name;
+            const val = event.target.value;
+            localStorage.setItem(key, val);
+            console.log("LOG: Saved " + key);
+        }
+    });
+
+    window.addEventListener('load', function() {
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(el => {
+            const saved = localStorage.getItem('FINAL_TEST_' + el.name);
+            if (saved) {
+                el.value = saved;
+                console.log("LOG: Restored " + el.name);
+            }
+        });
+    });
+</script>
 </body>
 </html>
