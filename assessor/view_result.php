@@ -9,10 +9,8 @@
     include '../config/db.php';
     include '../includes/functions.php';
 
-    if (isset($_GET['internship_id']) && isset($_GET['student_id']) && isset($_GET['student_name'])) {
+    if (isset($_GET['internship_id'])) {
         $internship_id = htmlspecialchars($_GET['internship_id']);
-        $student_id = htmlspecialchars($_GET['student_id']);
-        $student_name = htmlspecialchars($_GET['student_name']);
 
     } else {
         // If credentials not found, kick user back to dashboard
@@ -27,6 +25,8 @@
     if ($result && $result->num_rows > 0) {
         if ($row = $result->fetch_assoc()) {
             $has_result = true;
+            $student_id = htmlspecialchars($row['student_id']);
+            $student_name = htmlspecialchars($row['student_name']);
             $programme_name = htmlspecialchars($row['programme_name']);
             $company_name = htmlspecialchars($row['company_name']);
             $semester = htmlspecialchars($row['semester']);
@@ -56,7 +56,7 @@
             $time_management = htmlspecialchars($row['time_management']);
             $time_management_comment = htmlspecialchars($row['time_management_comment']);
 
-            $comments = htmlspecialchars($row['overall_comments']);
+            $comments = nl2br(htmlspecialchars($row['overall_comments']));
 
             $total_marks = htmlspecialchars($row['total_marks']);
         }

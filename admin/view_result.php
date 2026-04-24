@@ -171,7 +171,7 @@
 
                             <div class="feedback-box" style="margin-top: 15px;">
                                 <h4>General Comments</h4>
-                                <p><?= htmlspecialchars($eval['overall_comments']) ?></p>
+                                <p><?= nl2br(htmlspecialchars($eval['overall_comments'])) ?></p>
                             </div>
                         </div>
                     <?php endforeach; ?>

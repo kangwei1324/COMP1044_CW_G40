@@ -9,13 +9,21 @@
 
     // Retrieve state from GET or POST
     $internship_id = $_GET['internship_id'] ?? $_POST['internship_id'] ?? null;
-    $student_id = $_GET['student_id'] ?? $_POST['student_id'] ?? null;
-    $student_name = $_GET['student_name'] ?? $_POST['student_name'] ?? null;
 
-    if (!$internship_id || !$student_id || !$student_name) {
+    if (!$internship_id) {
         header("Location: dashboard.php");
         exit;
     }
+
+    $internship = check_internships($conn, $internship_id);
+    if (!$internship) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
+    $student = get_student($conn, $internship['student_id']);
+    $student_id = $student['student_id'] ?? null;
+    $student_name = $student['student_name'] ?? null;
 
     // Security Check: Ensure this internship is assigned to THIS assessor
     $is_assigned = false;
@@ -132,8 +140,6 @@
 
                     <form id="evaluationForm" method="post" action="evaluate.php">
                         <input type="hidden" name="internship_id" value="<?= $internship_id_safe ?>">
-                        <input type="hidden" name="student_id" value="<?= $student_id_safe ?>">
-                        <input type="hidden" name="student_name" value="<?= $student_name_safe ?>">
                         
                         <div class="score-row">
                             <label class="font-medium">1. Undertaking Tasks/Projects (Max 10%)</label>

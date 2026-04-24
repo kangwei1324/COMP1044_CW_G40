@@ -97,9 +97,9 @@
 
                                             <td class="table-cell">
                                                 <?php if ($status === 'Pending'): ?>
-                                                    <a href="evaluate.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>&student_name=<?= $student_name ?>" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
+                                                    <a href="evaluate.php?internship_id=<?= $internship_id ?>" class="btn btn-primary btn-auto btn-sm">Evaluate</a>
                                                 <?php else: ?>
-                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>&student_id=<?= $student_id ?>&student_name=<?= $student_name ?>" class="action-edit font-semibold font-14">View Result</a>
+                                                    <a href="view_result.php?internship_id=<?= $internship_id ?>" class="action-edit font-semibold font-14">View Result</a>
                                                 <?php endif; ?>
                                             </td>
 
