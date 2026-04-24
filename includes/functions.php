@@ -432,9 +432,9 @@
         );
 
         try {
-        if ($stmt->execute()) {
-            $stmt->close();
-            return true;
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
             }
         } catch (mysqli_sql_exception $e) {
             $stmt->close();
@@ -447,7 +447,7 @@
 
 
     function get_student_result($conn, $user_id, $internship_id) {
-        $sql = "SELECT i.company_name, p.programme_name, i.semester, i.internship_year, a.task_projects, a.task_projects_comment,
+        $sql = "SELECT s.student_name, s.student_id, i.company_name, p.programme_name, i.semester, i.internship_year, a.task_projects, a.task_projects_comment,
         a.health_safety, a.health_safety_comment, a.theoretical_knowledge, a.theoretical_knowledge_comment,
         a.report_presentation, a.report_presentation_comment, a.clarity_of_language, a.clarity_of_language_comment,
         a.lifelong_learning, a.lifelong_learning_comment, a.project_management, a.project_management_comment,
