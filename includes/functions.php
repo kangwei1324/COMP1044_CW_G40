@@ -8,8 +8,7 @@
     // ---- User / Assessor Functions ----
 
     function get_user($conn, $user_id) {
-        // Grab all info except password
-        $sql = "SELECT user_id, username, fullname, email, role FROM user WHERE user_id = ?";
+        $sql = "SELECT * FROM user WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
