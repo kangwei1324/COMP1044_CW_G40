@@ -70,6 +70,8 @@
         if (!is_numeric($score_project) || $score_project < 0 || $score_project > 15) $errors[] = "Project Management score must be between 0 and 15.";
         if (!is_numeric($score_time) || $score_time < 0 || $score_time > 15) $errors[] = "Time Management score must be between 0 and 15.";
 
+        if(!isset($_POST['confirm_submission'])) $errors[] = "Please confirm that you understand this evaluation is final.";
+
         if (empty($errors)) {
             if (submit_evaluation(
                 $conn, $user_id, $internship_id,
@@ -185,6 +187,12 @@
                             <textarea class="form-control" name="comments" rows="5" placeholder="Provide qualitative comments to justify the scores..."><?= htmlspecialchars($_POST['comments'] ?? '') ?></textarea>
                         </div>
 
+                        <div class="alert alert-warning display-flex align-center mb-24">
+                            <input type="checkbox" name="confirm_submission" id="confirm_submission" required class="w-auto mt-0" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="confirm_submission" class="mb-0 font-medium" style="cursor: pointer;">
+                                I confirm that these evaluation marks are final and cannot be changed after submission.
+                            </label>
+                        </div>
                         <div class="mt-2 text-right">
                             <button type="submit" name="submit_evaluation" class="btn btn-primary btn-auto">Submit Evaluation</button>
                         </div>
