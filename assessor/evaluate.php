@@ -27,18 +27,7 @@
     $student_name = $student['student_name'] ?? null;
 
     // Security Check: Ensure this internship is assigned to THIS assessor
-    $is_assigned = false;
-    $assigned_result = get_student_assessor($conn, $user_id);
-    if ($assigned_result) {
-        while ($row = $assigned_result->fetch_assoc()) {
-            if ($row['internship_id'] == $internship_id) {
-                $is_assigned = true;
-                break;
-            }
-        }
-    }
-
-    if (!$is_assigned) {
+    if (!is_assessor_assigned($conn, $user_id, $internship_id)) {
         header("Location: dashboard.php");
         exit;
     }

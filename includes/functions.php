@@ -356,6 +356,17 @@
         return get_student_assessor_paged($conn, $user_id, 9999, 0); // Legacy support
     }
 
+    function is_assessor_assigned($conn, $user_id, $internship_id) {
+        $sql = "SELECT 1 FROM internships WHERE internship_id = ? AND (lecturer_id = ? OR industry_supervisor_id = ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iii", $internship_id, $user_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $found  = $result->num_rows > 0;
+        $stmt->close();
+        return $found;
+    }
+
     function get_student_assessor_paged($conn, $user_id, $limit, $offset) {
         $sql = "SELECT s.student_id, s.student_name, i.internship_id, i.lecturer_id, i.industry_supervisor_id,
         i.company_name, i.semester, i.internship_year, p.programme_name,
