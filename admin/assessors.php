@@ -301,28 +301,28 @@
                     <form action="" method="post" class="form-grid">
                         <input type="hidden" name="action" value="add">
                         <div class="form-group">
-                            <label for="username">Username (Login ID)</label>
-                            <input type="text" name="username" id="username" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['username'] ?? '') : '' ?>" placeholder="e.g. drsmith" required>
+                            <label for="username_add">Username (Login ID)</label>
+                            <input type="text" name="username" id="username_add" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['username'] ?? '') : '' ?>" placeholder="e.g. drsmith" required>
                         </div>
                         <div class="form-group">
-                            <label for="fullname">Full Name</label>
-                            <input type="text" name="fullname" id="fullname" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['fullname'] ?? '') : '' ?>" placeholder="e.g. Dr. Alan Smith" required>
+                            <label for="fullname_add">Full Name</label>
+                            <input type="text" name="fullname" id="fullname_add" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['fullname'] ?? '') : '' ?>" placeholder="e.g. Dr. Alan Smith" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['email'] ?? '') : '' ?>" placeholder="e.g. alan12@gmail.com" required>
+                            <label for="email_add">Email</label>
+                            <input type="email" name="email" id="email_add" class="form-control" value="<?= $action === 'add' ? htmlspecialchars($_POST['email'] ?? '') : '' ?>" placeholder="e.g. alan12@gmail.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="role" class="form-control" required>
+                            <label for="role_add">Role</label>
+                            <select name="role" id="role_add" class="form-control" required>
                                 <option value="">Select a Role</option>
                                 <option value="industry_supervisor" <?= ($action === 'add' && ($_POST['role'] ?? '') === 'industry_supervisor') ? 'selected' : '' ?>>Industry Supervisor</option>
                                 <option value="lecturer" <?= ($action === 'add' && ($_POST['role'] ?? '') === 'lecturer') ? 'selected' : '' ?>>Lecturer</option>
                             </select>
                         </div>
                         <div class="form-group form-span-2">
-                            <label for="password">Temporary Password</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Set a temporary password" required>
+                            <label for="password_add">Temporary Password</label>
+                            <input type="password" name="password" id="password_add" class="form-control" placeholder="Set a temporary password" required>
                             <small class="card-description d-block mt-4">Assessors can change this upon their first login in the Settings menu.</small>
                         </div>
                         <div class="form-actions">
@@ -340,20 +340,20 @@
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group">
-                            <label for="username">Username (Login ID)</label>
-                            <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($edit_username) ?>" required>
+                            <label for="username_edit">Username (Login ID)</label>
+                            <input type="text" name="username" id="username_edit" class="form-control" value="<?= htmlspecialchars($edit_username) ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="fullname">Full Name</label>
-                            <input type="text" name="fullname" id="fullname" class="form-control" value="<?= htmlspecialchars($edit_fullname) ?>" required>
+                            <label for="fullname_edit">Full Name</label>
+                            <input type="text" name="fullname" id="fullname_edit" class="form-control" value="<?= htmlspecialchars($edit_fullname) ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($edit_email) ?>" required>
+                            <label for="email_edit">Email</label>
+                            <input type="email" name="email" id="email_edit" class="form-control" value="<?= htmlspecialchars($edit_email) ?>" required>
                         </div>
                         <div class="form-group form-span-2">
-                            <label for="password">Reset Password</label>
-                            <input type="checkbox" name="reset_password" id="reset_password">
+                            <label for="reset_password_edit">Reset Password</label>
+                            <input type="checkbox" name="reset_password" id="reset_password_edit">
                             <small class="card-description d-block mt-4">Reset Password to "password123"</small>
                             <small class="card-description d-block mt-4">Assessors can change this in the Settings menu.</small>
                         </div>
