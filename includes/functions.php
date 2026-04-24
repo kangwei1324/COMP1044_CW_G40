@@ -431,15 +431,18 @@
             $score_time, $comment_time, $comments
         );
 
+        try {
         if ($stmt->execute()) {
             $stmt->close();
             return true;
-
-        } else {
+            }
+        } catch (mysqli_sql_exception $e) {
             $stmt->close();
             return false;
         }
 
+        $stmt->close();
+        return false;
     }
 
 
