@@ -222,23 +222,54 @@ body {
 }
 
 .sidebar-brand {
-  padding: 24px 20px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--primary-color);
+  padding: 20px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
   white-space: nowrap;
+  min-height: 85px;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.brand-text.sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .sidebar.collapsed .sidebar-brand {
-  padding: 24px 0;
+  padding: 20px 0;
   justify-content: center;
 }
 
-.sidebar.collapsed .brand-text {
+.sidebar.collapsed .brand-text-wrapper {
   display: none;
 }
 
