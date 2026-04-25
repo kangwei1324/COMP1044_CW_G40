@@ -71,7 +71,7 @@
                 </div>
             <?php endif; ?>
 
-            <form action="" method="POST" id="loginForm">
+            <form action="" method="POST" id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required autofocus>
@@ -90,5 +90,6 @@
             </div>
         </div>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

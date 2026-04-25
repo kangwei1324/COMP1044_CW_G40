@@ -109,7 +109,7 @@
                 <div class="card max-w-600">
                     <h3 class="card-header-sep">Change Password</h3>
 
-                    <form action="" method="post">
+                    <form action="" method="post" novalidate>
                         <div class="form-group">
                             <label>Current Password</label>
                             <input type="password" name="current_password" class="form-control" placeholder="Enter current password" required>
@@ -117,7 +117,7 @@
 
                         <div class="form-group">
                             <label>New Password</label>
-                            <input type="password" name="new_password" class="form-control" placeholder="Enter new password (min. 8 characters)" required>
+                            <input type="password" name="new_password" class="form-control" placeholder="Enter new password (min. 8 characters)" minlength="8" required>
                         </div>
 
                         <div class="form-group">
@@ -133,5 +133,6 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

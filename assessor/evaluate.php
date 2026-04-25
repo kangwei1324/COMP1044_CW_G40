@@ -127,7 +127,7 @@
                     <h3 class="card-header-sep">Internship Assessment Form</h3>
                     <p class="card-description mb-24">Please enter the scores based on the predefined criteria. The system will automatically calculate the final marks.</p>
 
-                    <form id="evaluationForm" method="post" action="evaluate.php">
+                    <form id="evaluationForm" method="post" action="evaluate.php" novalidate>
                         <input type="hidden" name="internship_id" value="<?= $internship_id_safe ?>">
                         
                         <div class="score-row">
@@ -195,14 +195,12 @@
             </div>
         </main>
     </div>
-    <>
     <script src="../assets/js/validation.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('evaluationForm');
-        //Target both textareas and inputs now
         const allFields = document.querySelectorAll('textarea, input[type="number"]');
-        const PREFIX = "IRMS_EVAL_";
+        const PREFIX = "IRMS_EVAL_<?= $internship_id_safe ?>_"; // Unique prefix per internship
 
         // 1. Saves contents of page despite page refresh
         allFields.forEach(field => {
@@ -211,41 +209,25 @@
                 field.value = savedValue;
             }
 
-            // 2.Watch for any changes
+            // 2. Watch for any changes
             field.addEventListener('input', () => {
                 localStorage.setItem(PREFIX + field.name, field.value);
             });
         });
 
-        // 3. cleaning up and validation
+        // 3. cleaning up
         if (form) {
-            form.onsubmit = function(event) {
-                let isValid = true;
-                const scoreInputs = document.querySelectorAll('input[type="number"]');
-            
-                scoreInputs.forEach(input => {
-                    const maxVal = parseInt(input.getAttribute('max')) || 10;
-                    const val = parseInt(input.value);
-                    if (isNaN(val) || val > maxVal || val < 0) {
-                        alert(`Error: Mark must be between 0 and ${maxVal}.`);
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
-                    event.preventDefault();
-                    return false;
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity()) {
+                    // SUCCESS: Wipe the memory so the next evaluation starts fresh
+                    allFields.forEach(field => {
+                        localStorage.removeItem(PREFIX + field.name);
+                    });
                 }
-
-                // SUCCESS: Wipe the memory so the next evaluation starts fresh
-                allFields.forEach(field => {
-                    localStorage.removeItem(PREFIX + field.name);
-                });
-
-                return true;
-            };
+            });
         }
     });
     </script>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

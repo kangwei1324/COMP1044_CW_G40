@@ -211,13 +211,13 @@
                 <!-- Add Form -->
                 <div class="card collapse-form" id="addForm" <?= ($action === 'add' && !empty($errors)) ? 'style="display:block;"' : '' ?>>
                     <h3 class="mb-20">Register New Student</h3>
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="add">
                         <div class="form-group">
                             <label for="student_id_add">Student ID (Matric No.)</label>
                             <input type="text" name="student_id" id="student_id_add" class="form-control"
                                    value="<?= $action === 'add' ? htmlspecialchars($_POST['student_id'] ?? '') : '' ?>"
-                                   placeholder="e.g. 20701234" required>
+                                   placeholder="e.g. 20701234" pattern="\d+" required>
                         </div>
                         <div class="form-group">
                             <label for="student_name_add">Full Name</label>
@@ -252,7 +252,7 @@
                 <!-- Edit Form -->
                 <div class="card collapse-form" id="editForm" style="display: <?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;">
                     <h3 class="mb-20">Edit Student Profile</h3>
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group form-span-2">
@@ -374,5 +374,6 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

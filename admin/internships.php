@@ -281,7 +281,7 @@
                 <!-- Add Form -->
                 <div class="card collapse-form" id="addForm" <?= ($action === 'add' && !empty($errors)) ? 'style="display:block;"' : '' ?>>
                     <h3 class="mb-20">Assign Assessor to Student Internship</h3>
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="add">
                         
                         <!-- Row 1: Student and Assessor Dropdowns -->
@@ -347,7 +347,7 @@
                 ?>
                 <div class="card collapse-form" id="editForm" style="display: <?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;">
                     <h3 class="mb-20">Edit Student Internship</h3>
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= htmlspecialchars($edit_internship_id ?? '') ?>">
                         
@@ -577,5 +577,6 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

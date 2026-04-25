@@ -171,7 +171,7 @@
                 <!-- Add/Edit Form -->
                 <div class="card collapse-form" id="addForm" style="display: <?= ($action === 'add' && !empty($errors)) ? 'block' : 'none' ?>;">
                     <h3 class="mb-20">Add New Programme</h3>
-                    <form action="" method="post" class="display-flex gap-16 align-end">
+                    <form action="" method="post" class="display-flex gap-16 align-end" novalidate>
                         <input type="hidden" name="action" value="add">
                         <div class="form-group flex-1 mb-0">
                             <label for="prog_name_add">Programme Name</label>
@@ -184,7 +184,7 @@
 
                 <div class="card collapse-form" id="editForm" style="display: <?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;">
                     <h3 class="mb-20">Edit Programme</h3>
-                    <form action="" method="post" class="display-flex gap-16 align-end">
+                    <form action="" method="post" class="display-flex gap-16 align-end" novalidate>
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group flex-1 mb-0">
@@ -279,5 +279,6 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>
