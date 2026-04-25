@@ -68,7 +68,7 @@
     }
 
     // Determine page title based on role
-    $page_title = ($_SESSION['role'] === 'admin') ? 'Admin Settings - IRMS' : 'Assessor Settings - IRMS';
+    $page_title = ($_SESSION['role'] === 'admin') ? 'Admin Settings - University of Nottingham' : 'Assessor Settings - University of Nottingham';
 ?>
 
 <!DOCTYPE html>
