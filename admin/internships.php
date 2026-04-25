@@ -190,9 +190,9 @@
         }
     }
 
-    // 6. Handle Deletions (GET)
-    if (isset($_GET['delete_id'])) {
-        $delete_id = (int) $_GET['delete_id'];
+    // 6. Handle Deletions (POST)
+    if (isset($_POST['delete_id'])) {
+        $delete_id = (int) $_POST['delete_id'];
         $internship = check_internships($conn, $delete_id);
 
         if (!$internship) {
@@ -519,7 +519,10 @@
                                                     <a href="view_result.php?internship_id=<?= $internship_id ?>" class="action-edit" style="color: #0f172a;">View Results</a>
                                                 <?php endif; ?>
                                                 <a href="?edit_id=<?= $internship_id ?>" class="action-edit">Edit</a>
-                                                <a href="?delete_id=<?= $internship_id ?>" class="action-revoke" onclick="return confirm('Do you want to delete this internship? This cannot be undone.')">Delete</a>
+                                                <form action="" method="post" style="display:inline;">
+                                                    <input type="hidden" name="delete_id" value="<?= $internship_id ?>">
+                                                    <button type="submit" class="btn-link-reset action-revoke" onclick="return confirm('Are you sure you want to delete this internship assignment? This action cannot be undone.')">Delete</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
