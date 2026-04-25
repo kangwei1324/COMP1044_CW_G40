@@ -53,5 +53,32 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/validation.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Find the password form (it should be the only form on the settings page)
+        const passwordForm = document.querySelector('form'); 
+    
+        if (passwordForm) {
+            passwordForm.onsubmit = function(event) {
+                // 2. Grab the values using the 'name' attributes from your HTML
+                const newPwd = document.getElementsByName('new_password')[0].value;
+                const confirmPwd = document.getElementsByName('confirm_password')[0].value;
+
+                // 3. Point 3: The Match Check
+                if (newPwd !== confirmPwd) {
+                    alert("Validation Error: The 'New Password' and 'Confirm New Password' do not match.");
+                
+                    // Stop the form from submitting
+                    event.preventDefault(); 
+                    return false;
+                }
+            
+                // If they match, the form continues to the PHP naturally
+                return true; 
+            };
+        }
+    });
+</script>
 </body>
 </html>

@@ -195,29 +195,31 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('evaluationForm');
-        //Target both textareas and inputs now
         const allFields = document.querySelectorAll('textarea, input[type="number"]');
-        const PREFIX = "IRMS_EVAL_";
+    
+        // CRITICAL: This makes it student-specific
+        const studentId = document.getElementsByName('student_id')[0].value;
+        const PREFIX = "IRMS_EVAL_" + studentId + "_"; 
 
-        // 1. Saves contents of page despite page refresh
+        // 1. Load data for the CORRECT student
         allFields.forEach(field => {
             const savedValue = localStorage.getItem(PREFIX + field.name);
             if (savedValue !== null) {
                 field.value = savedValue;
             }
 
-            // 2.Watch for any changes
+            // 2. Watch for changes
             field.addEventListener('input', () => {
                 localStorage.setItem(PREFIX + field.name, field.value);
             });
         });
 
-        // 3. cleaning up and validation
+        // 3. Validation and cleanup
         if (form) {
             form.onsubmit = function(event) {
                 let isValid = true;
                 const scoreInputs = document.querySelectorAll('input[type="number"]');
-            
+        
                 scoreInputs.forEach(input => {
                     const maxVal = parseInt(input.getAttribute('max')) || 10;
                     const val = parseInt(input.value);
@@ -232,7 +234,7 @@
                     return false;
                 }
 
-                // SUCCESS: Wipe the memory so the next evaluation starts fresh
+                // SUCCESS: Wipe only THIS student's memory
                 allFields.forEach(field => {
                     localStorage.removeItem(PREFIX + field.name);
                 });
@@ -241,6 +243,6 @@
             };
         }
     });
-    </script>
+</script>
 </body>
 </html>
