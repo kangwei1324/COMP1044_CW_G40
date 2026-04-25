@@ -206,9 +206,9 @@
         }
     }
 
-    // 7. Handle Deletions (GET)
-    if (isset($_GET['delete_id'])) {
-        $delete_id = (int) $_GET['delete_id']; // Cast to int — kills any injection attempt
+    // 7. Handle Deletions (POST)
+    if (isset($_POST['delete_id'])) {
+        $delete_id = (int) $_POST['delete_id']; // Cast to int
 
         // Guard 1: Prevent deleting yourself
         if ($delete_id === (int) $_SESSION['user_id']) {
@@ -395,7 +395,10 @@
                                             <td class="table-cell"><?= htmlspecialchars($row['fullname']) ?></td>
                                             <td class="table-actions-cell">
                                                 <a href="?edit_id=<?= $row['user_id'] ?>" class="action-edit">Edit</a>
-                                                <a href="?delete_id=<?= $row['user_id'] ?>" class="action-revoke" onclick="return confirm('Revoke access for this assessor? This cannot be undone.')">Revoke Access</a>
+                                                <form action="" method="post" style="display:inline;">
+                                                    <input type="hidden" name="delete_id" value="<?= $row['user_id'] ?>">
+                                                    <button type="submit" class="btn-link-reset action-revoke" onclick="return confirm('Are you sure you want to revoke access for this assessor? This action cannot be undone.')">Revoke Access</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>

@@ -130,9 +130,9 @@
         }
     }
 
-    // 7. Handle Deletions (GET)
-    if (isset($_GET['delete_id'])) {
-        $delete_id = (int) $_GET['delete_id'];
+    // 7. Handle Deletions (POST)
+    if (isset($_POST['delete_id'])) {
+        $delete_id = (int) $_POST['delete_id'];
 
         // Verify the student exists before attempting delete
         $target_student = get_student($conn, $delete_id);
@@ -315,8 +315,11 @@
                                             <td class="table-cell"><?= htmlspecialchars($row['programme_name']) ?></td>
                                             <td class="table-actions-cell">
                                                 <a href="?edit_id=<?= $row['student_id'] ?>" class="action-edit">Edit</a>
-                                                <a href="?delete_id=<?= $row['student_id'] ?>" class="action-revoke"
-                                                   onclick="return confirm('Delete this student profile? This cannot be undone if they have active internships.')">Delete</a>
+                                                <form action="" method="post" style="display:inline;">
+                                                    <input type="hidden" name="delete_id" value="<?= $row['student_id'] ?>">
+                                                    <button type="submit" class="btn-link-reset action-revoke"
+                                                            onclick="return confirm('Are you sure you want to delete this student profile? This action cannot be undone.')">Delete</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
