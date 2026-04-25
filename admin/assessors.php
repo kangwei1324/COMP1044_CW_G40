@@ -298,7 +298,7 @@
                 <div class="card collapse-form" id="addForm" <?= ($action === 'add' && !empty($errors)) ? 'style="display:block;"' : '' ?>>
                     <h3 class="mb-20">Register New Assessor</h3>
 
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="add">
                         <div class="form-group">
                             <label for="username_add">Username (Login ID)</label>
@@ -336,7 +336,7 @@
                 <div class="card collapse-form" style="display:<?= ($edit_mode || ($action === 'edit' && !empty($errors))) ? 'block' : 'none' ?>;" id="editForm">
                     <h3 class="mb-20">Edit Assessor</h3>
 
-                    <form action="" method="post" class="form-grid">
+                    <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group">
@@ -450,5 +450,6 @@
             </div>
         </main>
     </div>
+    <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

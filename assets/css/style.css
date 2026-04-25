@@ -805,6 +805,18 @@ body {
   color: var(--text-dark);
 }
 
+/* Validation Styles */
+.is-invalid {
+  border-color: var(--danger-color) !important;
+}
+
+.invalid-feedback {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
 /* Print Styles */
 @media print {
   .sidebar, .top-nav, .logout-btn, .page-header button, .back-link {
