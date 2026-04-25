@@ -7,7 +7,13 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <span class="brand-text">IRMS Portal</span>
+        <div class="brand-wrapper">
+            <img src="../assets/images/logo.png" alt="Nottingham Logo" class="brand-logo">
+            <div class="brand-text-wrapper">
+                <span class="brand-text">University of</span>
+                <span class="brand-text">Nottingham</span>
+            </div>
+        </div>
         <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
             <span class="icon"><img src="../assets/images/menu-lines.svg" alt="Toggle"></span>
         </button>
