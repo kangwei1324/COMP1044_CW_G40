@@ -104,9 +104,12 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Sidebar -->
         <?php include '../components/sidebar.php' ?>
 
+        <!-- Main Content -->
         <main class="main-content">
+            <!-- header -->
             <?php include '../components/header.php'; ?>
 
             <div class="content-area">
@@ -117,6 +120,7 @@
                     <a href="dashboard.php" class="btn btn-secondary btn-auto btn-sm back-link">&larr; Back to Dashboard</a>
                 </div>
 
+                <!-- Display Errors -->
                 <?php if (!empty($errors)): ?>
                     <?php foreach($errors as $error): ?>
                         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
