@@ -81,7 +81,11 @@
                                 <div>
                                     <p class="subtitle">Total Combined Score</p>
                                     <p class="font-medium text-success" style="font-size: 1.25rem;">
-                                        <?= htmlspecialchars($evaluations[0]['total_marks'] + $evaluations[1]['total_marks']) ?> / 200
+                                        <?php 
+                                            $total_combined = $evaluations[0]['total_marks'] + $evaluations[1]['total_marks'];
+                                            $total_percentage = ($total_combined / 200) * 100;
+                                            echo htmlspecialchars($total_combined) . " / 200 (" . number_format($total_percentage, 1) . "%)";
+                                        ?>
                                     </p>
                                 </div>
                             <?php endif; ?>
