@@ -239,7 +239,7 @@
 
                 } catch (mysqli_sql_exception) {
                     if ($conn->errno == 1451) {
-                        $errors[] = "Cannot delete: This user is already assigned to students.";
+                        $errors[] = "Cannot delete: This user is currently assigned to an internship.";
                     } else {
                         $errors[] = "System error occurred.";
                     }
