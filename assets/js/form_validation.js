@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getErrorMessage(element) {
         if (element.validity.valueMissing) {
+            if (element.type === 'checkbox') return 'You must check this box to continue.';
             return 'This field is required.';
         }
         if (element.validity.patternMismatch) {
@@ -85,19 +86,38 @@ document.addEventListener('DOMContentLoaded', function () {
         return element.validationMessage || 'Invalid value.';
     }
 
+    function getFeedbackElement(element) {
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            const parent = element.parentNode;
+            for (let i = 0; i < parent.children.length; i++) {
+                if (parent.children[i].classList.contains('invalid-feedback')) {
+                    return parent.children[i];
+                }
+            }
+            return null;
+        } else {
+            const next = element.nextElementSibling;
+            if (next && next.classList.contains('invalid-feedback')) {
+                return next;
+            }
+            return null;
+        }
+    }
+
     function showError(element, message) {
         element.classList.add('is-invalid');
         element.style.borderColor = 'var(--danger-color)';
 
-        let feedback = element.nextElementSibling;
-        if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+        let feedback = getFeedbackElement(element);
+        
+        if (!feedback) {
             feedback = document.createElement('div');
             feedback.className = 'invalid-feedback';
             feedback.style.color = 'var(--danger-color)';
             feedback.style.fontSize = '0.875rem';
             feedback.style.marginTop = '0.25rem';
             
-            if (element.type === 'checkbox') {
+            if (element.type === 'checkbox' || element.type === 'radio') {
                 element.parentNode.appendChild(feedback);
             } else {
                 element.parentNode.insertBefore(feedback, element.nextSibling);
@@ -110,8 +130,8 @@ document.addEventListener('DOMContentLoaded', function () {
         element.classList.remove('is-invalid');
         element.style.borderColor = ''; // reset to CSS default
         
-        const feedback = element.nextElementSibling;
-        if (feedback && feedback.classList.contains('invalid-feedback')) {
+        const feedback = getFeedbackElement(element);
+        if (feedback) {
             feedback.remove();
         }
     }
