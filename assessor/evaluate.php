@@ -131,7 +131,7 @@
                     <h3 class="card-header-sep">Internship Assessment Form</h3>
                     <p class="card-description mb-24">Please enter the scores based on the predefined criteria. The system will automatically calculate the final marks.</p>
 
-                    <form id="evaluationForm" method="post" action="evaluate.php" novalidate>
+                    <form id="evaluationForm" method="post" action="evaluate.php" novalidate data-persistence-prefix="IRMS_EVAL_<?= $internship_id_safe ?>_">
                         <input type="hidden" name="internship_id" value="<?= $internship_id_safe ?>">
                         
                         <div class="score-row">
@@ -199,39 +199,8 @@
             </div>
         </main>
     </div>
-    <script src="../assets/js/validation.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('evaluationForm');
-        const allFields = document.querySelectorAll('textarea, input[type="number"]');
-        const PREFIX = "IRMS_EVAL_<?= $internship_id_safe ?>_"; // Unique prefix per internship
-
-        // 1. Saves contents of page despite page refresh
-        allFields.forEach(field => {
-            const savedValue = localStorage.getItem(PREFIX + field.name);
-            if (savedValue !== null) {
-                field.value = savedValue;
-            }
-
-            // 2. Watch for any changes
-            field.addEventListener('input', () => {
-                localStorage.setItem(PREFIX + field.name, field.value);
-            });
-        });
-
-        // 3. cleaning up
-        if (form) {
-            form.addEventListener('submit', function(event) {
-                if (form.checkValidity()) {
-                    // SUCCESS: Wipe the memory so the next evaluation starts fresh
-                    allFields.forEach(field => {
-                        localStorage.removeItem(PREFIX + field.name);
-                    });
-                }
-            });
-        }
-    });
-    </script>
+    <script src="../assets/js/evaluation_calculator.js"></script>
+    <script src="../assets/js/form_persistence.js"></script>
     <script src="../assets/js/form_validation.js"></script>
 </body>
 </html>

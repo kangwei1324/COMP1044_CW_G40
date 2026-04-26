@@ -19,15 +19,29 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Add real-time validation for inputs
+        // Add hybrid real-time validation
         const elements = form.querySelectorAll('input, select, textarea');
         elements.forEach(element => {
-            // Remove error state as user types/changes
+            // 1. Immediate validation for specific cases as user types
             element.addEventListener('input', function () {
-                clearError(element);
+                // If the element has a range error (min/max), show it immediately
+                if (element.validity.rangeOverflow || element.validity.rangeUnderflow) {
+                    validateElement(element);
+                } 
+                // If it was already invalid, re-validate to clear/update error as they fix it
+                else if (element.classList.contains('is-invalid')) {
+                    validateElement(element);
+                }
             });
+
+            // 2. Full validation when the user leaves the field
+            element.addEventListener('blur', function () {
+                validateElement(element);
+            });
+
+            // 3. Change event for selects and checkboxes
             element.addEventListener('change', function () {
-                clearError(element);
+                validateElement(element);
             });
         });
     });
@@ -82,7 +96,12 @@ document.addEventListener('DOMContentLoaded', function () {
             feedback.style.color = 'var(--danger-color)';
             feedback.style.fontSize = '0.875rem';
             feedback.style.marginTop = '0.25rem';
-            element.parentNode.insertBefore(feedback, element.nextSibling);
+            
+            if (element.type === 'checkbox') {
+                element.parentNode.appendChild(feedback);
+            } else {
+                element.parentNode.insertBefore(feedback, element.nextSibling);
+            }
         }
         feedback.textContent = message;
     }

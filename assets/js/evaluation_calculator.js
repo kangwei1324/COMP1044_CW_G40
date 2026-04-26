@@ -10,17 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         scoreInputs.forEach(input => {
             const val = parseFloat(input.value) || 0;
-            const max = parseFloat(input.getAttribute('max'));
             
-            // Client-side visual validation
-            if (val > max) {
-                input.style.borderColor = 'var(--danger-color)';
-                isValid = false;
-            } else if (val < 0) {
-                input.style.borderColor = 'var(--danger-color)';
+            // Note: form_validation.js handles the visual error messages and borders
+            // This script only handles the calculation logic for the total score.
+            
+            // We only want to flag isValid = false if the input is NOT empty 
+            // AND fails checkValidity (like going over the max score).
+            // If it's empty, we just let it add 0 to the total.
+            if (input.value && !input.checkValidity()) {
                 isValid = false;
             } else {
-                input.style.borderColor = 'var(--border-color)';
                 total += val;
             }
         });
