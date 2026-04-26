@@ -28,7 +28,8 @@
         'lecturer_id'   => $_GET['lecturer_id'] ?? '',
         'supervisor_id' => $_GET['supervisor_id'] ?? '',
         'semester'      => $_GET['semester'] ?? '',
-        'year'          => $_GET['year'] ?? ''
+        'year'          => $_GET['year'] ?? '',
+        'status'        => $_GET['status'] ?? ''
     ];
     
     $limit  = 10;
@@ -455,6 +456,12 @@
                                     <?= $y['internship_year'] ?>
                                 </option>
                             <?php endwhile; ?>
+                        </select>
+
+                        <select name="status" class="form-control btn-auto">
+                            <option value="">Status: All</option>
+                            <option value="completed" <?= $filters['status'] === 'completed' ? 'selected' : '' ?>>Completed</option>
+                            <option value="incomplete" <?= $filters['status'] === 'incomplete' ? 'selected' : '' ?>>Incomplete</option>
                         </select>
 
                         <button type="submit" class="btn btn-primary btn-auto">Filter</button>

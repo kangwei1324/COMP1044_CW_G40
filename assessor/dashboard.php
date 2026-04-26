@@ -6,17 +6,19 @@
 
     $user_id = $_SESSION['user_id'];
     
-    // Pagination State
+    // Pagination & Filter State
+    $status_filter = $_GET['status'] ?? '';
+    
     $limit  = 10;
     $page   = (int) ($_GET['page'] ?? 1);
     if ($page < 1) $page = 1;
-    $total_students = count_student_assessor($conn, $user_id);
+    $total_students = count_student_assessor($conn, $user_id, $status_filter);
     $total_pages    = ceil($total_students / $limit);
     if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
 
     $offset = ($page - 1) * $limit;
 
-    $result = get_student_assessor_paged($conn, $user_id, $limit, $offset);
+    $result = get_student_assessor_paged($conn, $user_id, $limit, $offset, $status_filter);
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +51,21 @@
 
                 <div class="card">
                     <h2>Your Evaluations</h2>
-                    <p class="card-description">Select a student from your assigned list to begin the evaluation process.</p>
+                    <div class="display-flex justify-between align-end mb-20">
+                        <p class="card-description mb-0">Select a student from your assigned list to begin the evaluation process.</p>
+                        
+                        <form action="" method="get" class="search-container mb-0">
+                            <select name="status" class="form-control btn-auto">
+                                <option value="">Status: All</option>
+                                <option value="completed" <?= $status_filter === 'completed' ? 'selected' : '' ?>>Completed</option>
+                                <option value="pending" <?= $status_filter === 'pending' ? 'selected' : '' ?>>Pending</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-auto">Filter</button>
+                            <?php if (!empty($status_filter)): ?>
+                                <a href="dashboard.php" class="btn btn-secondary btn-auto">Reset</a>
+                            <?php endif; ?>
+                        </form>
+                    </div>
                     
                     <div class="table-responsive">
                         <table class="irms-table">
@@ -120,21 +136,24 @@
                             </div>
                             
                             <!-- Prev -->
-                            <a href="?page=<?= $page - 1 ?>" 
+                            <?php 
+                                $query_params = http_build_query(['status' => $status_filter]);
+                            ?>
+                            <a href="?page=<?= $page - 1 ?>&<?= $query_params ?>" 
                                class="pagination-item <?= ($page <= 1) ? 'disabled' : '' ?>"
                                <?= ($page <= 1) ? 'onclick="return false;"' : '' ?>>
                                 &laquo; Prev
                             </a>
 
                             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                <a href="?page=<?= $i ?>" 
+                                <a href="?page=<?= $i ?>&<?= $query_params ?>" 
                                    class="pagination-item <?= ($i === $page) ? 'active' : '' ?>">
                                     <?= $i ?>
                                 </a>
                             <?php endfor; ?>
 
                             <!-- Next -->
-                            <a href="?page=<?= $page + 1 ?>" 
+                            <a href="?page=<?= $page + 1 ?>&<?= $query_params ?>" 
                                class="pagination-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>"
                                <?= ($page >= $total_pages) ? 'onclick="return false;"' : '' ?>>
                                 Next &raquo;
