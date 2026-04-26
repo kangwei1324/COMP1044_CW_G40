@@ -26,3 +26,12 @@ To access the system, ensure your local server (e.g., MAMP, XAMPP) is running wi
 1. Navigate to the root directory in your browser (e.g., `http://localhost/COMP1044_CW_G40/`).
 2. The system will automatically serve `index.php`.
 3. `index.php` acts as the entry point and will seamlessly direct you to the main login page at `auth/login.php`.
+
+## Sample Login Credentials
+You can use the following accounts to test the system's role-based access control:
+
+| Role | Username | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin` | `password123` |
+| **Lecturer** | `dr.lim` | `password123` |
+| **Industry Supervisor** | `raj.kumar` | `password123` |
