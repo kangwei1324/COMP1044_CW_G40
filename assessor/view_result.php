@@ -177,7 +177,7 @@
                             </tr>
                             <tr class="total-row">
                                 <td>Total Score</td>
-                                <td class="text-right"><?= $total_marks ?></td>
+                                <td class="text-right"><?= htmlspecialchars($total_marks) ?> / 100 (<?= number_format((float)$total_marks, 1) ?>%)</td>
                             </tr>
                         </tbody>
                     </table>
