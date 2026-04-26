@@ -203,6 +203,14 @@
             $params[] = $filters['year'];
             $types .= "i";
         }
+        
+        if (!empty($filters['status'])) {
+            if ($filters['status'] === 'completed') {
+                $where[] = "(SELECT COUNT(*) FROM assessment a WHERE a.internship_id = i.internship_id) = 2";
+            } elseif ($filters['status'] === 'incomplete') {
+                $where[] = "(SELECT COUNT(*) FROM assessment a WHERE a.internship_id = i.internship_id) < 2";
+            }
+        }
 
         if (!empty($where)) {
             $sql .= " WHERE " . implode(" AND ", $where);
@@ -260,6 +268,14 @@
             $where[] = "i.internship_year = ?";
             $params[] = $filters['year'];
             $types .= "i";
+        }
+
+        if (!empty($filters['status'])) {
+            if ($filters['status'] === 'completed') {
+                $where[] = "(SELECT COUNT(*) FROM assessment a WHERE a.internship_id = i.internship_id) = 2";
+            } elseif ($filters['status'] === 'incomplete') {
+                $where[] = "(SELECT COUNT(*) FROM assessment a WHERE a.internship_id = i.internship_id) < 2";
+            }
         }
 
         if (!empty($where)) {
@@ -367,7 +383,7 @@
         return $found;
     }
 
-    function get_student_assessor_paged($conn, $user_id, $limit, $offset) {
+    function get_student_assessor_paged($conn, $user_id, $limit, $offset, $status_filter = "") {
         $sql = "SELECT s.student_id, s.student_name, i.internship_id, i.lecturer_id, i.industry_supervisor_id,
         i.company_name, i.semester, i.internship_year, p.programme_name,
         IF(a.assessment_id IS NULL, 'Pending', 'Completed') AS status
@@ -375,8 +391,15 @@
         JOIN student s ON i.student_id = s.student_id
         JOIN programme p ON s.programme_id = p.programme_id
         LEFT JOIN assessment a ON a.internship_id = i.internship_id AND a.assessor_id = ?
-        WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)
-        ORDER BY i.internship_id DESC LIMIT ? OFFSET ?";
+        WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)";
+        
+        if ($status_filter === 'completed') {
+            $sql .= " AND a.assessment_id IS NOT NULL";
+        } elseif ($status_filter === 'pending') {
+            $sql .= " AND a.assessment_id IS NULL";
+        }
+
+        $sql .= " ORDER BY i.internship_id DESC LIMIT ? OFFSET ?";
 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iiiii", $user_id, $user_id, $user_id, $limit, $offset);
@@ -391,13 +414,20 @@
         }
     }
 
-    function count_student_assessor($conn, $user_id) {
+    function count_student_assessor($conn, $user_id, $status_filter = "") {
         $sql = "SELECT COUNT(*) as total 
                 FROM internships i
+                LEFT JOIN assessment a ON a.internship_id = i.internship_id AND a.assessor_id = ?
                 WHERE (i.lecturer_id = ? OR i.industry_supervisor_id = ?)";
         
+        if ($status_filter === 'completed') {
+            $sql .= " AND a.assessment_id IS NOT NULL";
+        } elseif ($status_filter === 'pending') {
+            $sql .= " AND a.assessment_id IS NULL";
+        }
+        
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $user_id, $user_id);
+        $stmt->bind_param("iii", $user_id, $user_id, $user_id);
         
         if ($stmt->execute()) {
             $result = $stmt->get_result()->fetch_assoc();
