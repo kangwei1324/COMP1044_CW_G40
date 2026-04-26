@@ -18,7 +18,7 @@
     $action = $_POST['action'] ?? '';
 
     // 3. Handle Success Messages from URL (PRG Pattern)
-    if (isset($_GET['success'])) {
+    if (isset($_GET['success']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         if ($_GET['success'] === 'added') {
             $success_msg = "New assessor account has been created successfully!";

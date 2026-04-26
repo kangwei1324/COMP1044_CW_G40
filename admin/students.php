@@ -16,7 +16,7 @@
     $edit_programme_id_value = "";
 
     // 3. Handle Success Messages from URL (PRG Pattern)
-    if (isset($_GET['success'])) {
+    if (isset($_GET['success']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
         if ($_GET['success'] === 'added')   $success_msg = "New student profile has been created successfully!";
         if ($_GET['success'] === 'deleted') $success_msg = "Student profile has been deleted successfully!";
         if ($_GET['success'] === 'edited')  $success_msg = "Student profile has been updated successfully!";
