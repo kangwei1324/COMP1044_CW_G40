@@ -92,7 +92,7 @@
                         <div class="card mb-20">
                             <h3 class="mb-20">
                                 Evaluation by <?= htmlspecialchars($eval['assessor_name']) ?> 
-                                <span class="badge <?= $eval['assessor_role'] == 'lecturer' ? 'badge-primary' : 'badge-warning' ?>" style="vertical-align: middle; margin-left: 10px;">
+                                <span class="badge <?= $eval['assessor_role'] == 'lecturer' ? 'badge-primary' : 'badge-success' ?>" style="vertical-align: middle; margin-left: 10px;">
                                     <?= ucwords(str_replace('_', ' ', $eval['assessor_role'])) ?>
                                 </span>
                             </h3>
