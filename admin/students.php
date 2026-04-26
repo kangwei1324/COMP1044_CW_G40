@@ -64,7 +64,7 @@
         // Action-specific validation
         if ($action === 'add') {
             $student_id = trim($_POST['student_id'] ?? '');
-            if (empty($student_id))           $errors[] = "Student ID (Matric No.) is required.";
+            if (empty($student_id))           $errors[] = "Student ID is required.";
             if (!ctype_digit($student_id))    $errors[] = "Student ID must be numeric.";
         }
 
@@ -83,7 +83,7 @@
                     }
                 } catch (mysqli_sql_exception) {
                     if ($conn->errno === 1062) {
-                        $errors[] = "Error: A student with this Matric No. already exists.";
+                        $errors[] = "Error: A student with this Student ID already exists.";
                     } elseif ($conn->errno === 1452) {
                         $errors[] = "Error: The selected programme does not exist.";
                     } else {
@@ -214,7 +214,7 @@
                     <form action="" method="post" class="form-grid" novalidate>
                         <input type="hidden" name="action" value="add">
                         <div class="form-group">
-                            <label for="student_id_add">Student ID (Matric No.)</label>
+                            <label for="student_id_add">Student ID</label>
                             <input type="text" name="student_id" id="student_id_add" class="form-control"
                                    value="<?= $action === 'add' ? htmlspecialchars($_POST['student_id'] ?? '') : '' ?>"
                                    placeholder="e.g. 20701234" pattern="\d+" required>
@@ -256,7 +256,7 @@
                         <input type="hidden" name="action" value="edit">
                         <input type="hidden" name="edit_id" value="<?= $edit_id ?? '' ?>">
                         <div class="form-group form-span-2">
-                            <label>Student ID (Matric No.)</label>
+                            <label>Student ID</label>
                             <!-- Read-only: student_id is the PK and a FK in internships, it should not be changed -->
                             <input type="text" class="form-control" value="<?= htmlspecialchars($student['student_id'] ?? '') ?>" disabled>
                             <small class="card-description d-block mt-4">The Student ID cannot be changed as it is used to link internship records.</small>
@@ -288,7 +288,7 @@
                 <div class="card">
                     <form action="" method="get" class="search-container">
                         <input type="text" name="search" class="form-control max-w-400" 
-                               placeholder="Search by Name or Matric No..." 
+                               placeholder="Search by Name or Student ID..." 
                                value="<?= htmlspecialchars($search) ?>">
                         <button type="submit" class="btn btn-primary btn-auto">Search</button>
                         <?php if (!empty($search)): ?>
