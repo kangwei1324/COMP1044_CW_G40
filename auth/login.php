@@ -20,6 +20,7 @@
         // Get results
         $results = $stmt->get_result();
         $user = $results->fetch_assoc();
+        $stmt->close();
 
         // Verify password
         if ($user && password_verify($password, $user['password'])) {
