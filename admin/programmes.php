@@ -13,7 +13,7 @@
     $action = $_POST['action'] ?? '';
 
     // 3. Handle Success Messages from URL (PRG Pattern)
-    if (isset($_GET['success'])) {
+    if (isset($_GET['success']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
         if ($_GET['success'] === 'added')   $success_msg = "New programme added successfully!";
         if ($_GET['success'] === 'deleted') $success_msg = "Programme deleted successfully!";
         if ($_GET['success'] === 'edited')  $success_msg = "Programme updated successfully!";
